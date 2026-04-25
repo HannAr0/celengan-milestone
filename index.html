@@ -9,83 +9,88 @@
         .progress-transition {
             transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
         }
-        /* Sembunyikan scrollbar untuk tampilan lebih bersih di list milestone */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
         .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans text-gray-800 pb-10">
+<body class="bg-slate-50 min-h-screen font-sans text-slate-700 pb-10">
 
-    <div class="max-w-md mx-auto pt-10 px-4">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-indigo-600">Celengan Milestone 🐷</h1>
-            <p class="text-gray-500 mt-2">Pantau dan atur target tabungan harianmu!</p>
-        </div>
+    <div class="max-w-md mx-auto pt-8 px-4">
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+            <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Total Tabungan</h2>
+            <div class="text-4xl font-bold text-slate-800 mb-8" id="totalAmount">Rp 0</div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Tabungan</h2>
-            <div class="text-4xl font-bold text-gray-900 mb-6" id="totalAmount">Rp 0</div>
-
-            <div class="relative w-full h-6 bg-gray-200 rounded-full mb-2 overflow-hidden shadow-inner">
-                <div id="progressBar" class="absolute top-0 left-0 h-full bg-indigo-500 progress-transition rounded-full" style="width: 0%;"></div>
+            <div class="relative w-full h-5 bg-slate-100 rounded-full mb-2 overflow-hidden shadow-inner">
+                <div id="progressBar" class="absolute top-0 left-0 h-full bg-teal-400 progress-transition rounded-full" style="width: 0%;"></div>
             </div>
 
-            <div class="relative w-full h-8 flex justify-between text-xs font-medium text-gray-400 mt-2" id="milestoneMarkers">
+            <div class="relative w-full h-8 flex justify-between text-xs font-medium text-slate-400 mt-2" id="milestoneMarkers">
                 </div>
-            <p id="noMilestoneWarning" class="text-xs text-orange-500 mt-2 hidden text-center italic">Belum ada milestone yang diatur.</p>
+            <p id="noMilestoneWarning" class="text-xs text-rose-400 mt-2 hidden text-center italic">Belum ada milestone yang diatur.</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <h3 class="text-lg font-bold mb-4">Catat Transaksi</h3>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+            <h3 class="text-base font-semibold text-slate-700 mb-4">Catat Transaksi</h3>
             
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                <input type="number" id="inputAmount" placeholder="Contoh: 15000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                <label class="block text-xs font-medium text-slate-500 mb-1">Nominal (Dalam Ribuan)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-sm">Rp</span>
+                    <input type="number" id="inputAmount" placeholder="Contoh: 15 (untuk Rp 15.000)" class="w-full pl-9 pr-12 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 text-sm">.000</span>
+                </div>
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Keterangan</label>
-                <input type="text" id="inputNote" placeholder="Contoh: Sisa uang jajan, Beli bensin..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                <label class="block text-xs font-medium text-slate-500 mb-1">Keterangan</label>
+                <input type="text" id="inputNote" placeholder="Contoh: Sisa uang jajan..." class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
             </div>
 
-            <div class="flex gap-4">
-                <button onclick="addTransaction('add')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
-                    <span>+ Nabung</span>
+            <div class="flex gap-3">
+                <button onclick="addTransaction('add')" class="flex-1 bg-emerald-400 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
+                    <span class="text-lg leading-none">+</span> Nabung
                 </button>
-                <button onclick="addTransaction('subtract')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
-                    <span>- Pakai</span>
+                <button onclick="addTransaction('subtract')" class="flex-1 bg-rose-400 hover:bg-rose-500 text-white font-medium py-2.5 rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
+                    <span class="text-lg leading-none">-</span> Pakai
                 </button>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Riwayat</h3>
-                <button onclick="clearHistory()" class="text-sm text-red-500 hover:text-red-700 font-medium bg-red-50 px-3 py-1 rounded-md">Reset Semua</button>
+                <h3 class="text-base font-semibold text-slate-700">Riwayat</h3>
+                <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-600 font-medium bg-rose-50 px-2.5 py-1 rounded-lg transition">Reset Saldo</button>
             </div>
             
-            <div id="historyList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+            <div id="historyList" class="space-y-2.5 max-h-52 overflow-y-auto pr-1 no-scrollbar">
                 </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h3 class="text-base font-semibold text-slate-700 mb-4 flex items-center gap-2">
                 <span>🎯</span> Atur Milestone
             </h3>
             
-            <div class="flex gap-2 mb-4">
-                <input type="number" id="inputMilestone" placeholder="Tambah target (misal: 20000)" class="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-                <button onclick="addMilestone()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
-                    Tambah
+            <div class="flex flex-col gap-2 mb-4">
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <input type="number" id="inputMilestone" placeholder="Nominal (Ribuan)" class="w-full pl-3 pr-8 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">k</span>
+                    </div>
+                    <input type="text" id="inputMilestoneNote" placeholder="Keterangan (Makan, dll)" class="flex-[1.5] px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
+                </div>
+                <button onclick="addMilestone()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2 rounded-xl shadow-sm transition text-sm">
+                    Tambah Target Baru
                 </button>
             </div>
 
-            <div id="milestoneList" class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+            <div id="milestoneList" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1 no-scrollbar">
                 </div>
         </div>
     </div>
@@ -94,7 +99,12 @@
         // State Aplikasi
         let currentAmount = 0;
         let history = [];
-        let milestones = [12000, 50000, 150000]; // Nilai default awal
+        // Struktur milestone sekarang menggunakan object untuk menyimpan nominal dan keterangan
+        let milestones = [
+            { amount: 12000, note: 'Awal' }, 
+            { amount: 50000, note: 'Menengah' }, 
+            { amount: 150000, note: 'Final' }
+        ];
 
         // Format Rupiah
         const formatRupiah = (number) => {
@@ -135,34 +145,38 @@
                 warning.classList.add('hidden');
             }
 
-            const maxMilestone = Math.max(...milestones);
+            const maxMilestone = milestones[milestones.length - 1].amount;
 
             milestones.forEach((milestone, index) => {
                 // 1. Render Marker di Bawah Progress Bar
-                const percentage = (milestone / maxMilestone) * 100;
+                const percentage = (milestone.amount / maxMilestone) * 100;
                 const marker = document.createElement('div');
                 marker.className = 'absolute flex flex-col items-center transform -translate-x-1/2';
                 marker.style.left = `${percentage}%`;
                 
                 const dot = document.createElement('div');
-                dot.className = 'w-1 h-2 bg-gray-300 mb-1 rounded-sm';
+                dot.className = 'w-1 h-2 bg-slate-300 mb-1 rounded-sm';
                 
                 const text = document.createElement('span');
-                text.innerText = formatShort(milestone);
-                text.className = 'bg-gray-100 px-1 rounded text-gray-500 text-[10px] sm:text-xs';
+                // Tampilkan tulisan pendek (misal: 30k) di bawah bar agar tidak kepanjangan
+                text.innerText = formatShort(milestone.amount);
+                text.className = 'bg-white border border-slate-100 px-1.5 py-0.5 rounded text-slate-500 text-[10px] sm:text-xs shadow-sm';
 
                 marker.appendChild(dot);
                 marker.appendChild(text);
                 markerContainer.appendChild(marker);
 
-                // 2. Render Chips di Panel Pengaturan
+                // 2. Render List di Panel Pengaturan (Pindah ke format baris/row agar lega)
                 const chip = document.createElement('div');
-                chip.className = 'flex-shrink-0 flex items-center bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1';
+                chip.className = 'flex items-center justify-between bg-teal-50/50 border border-teal-100/50 rounded-xl px-3 py-2';
                 chip.innerHTML = `
-                    <span class="text-indigo-700 font-semibold text-sm mr-2">${formatShort(milestone)}</span>
-                    <button onclick="removeMilestone(${index})" class="text-indigo-400 hover:text-red-500 transition focus:outline-none">
+                    <div class="flex flex-col">
+                        <span class="text-teal-700 font-semibold text-sm">${formatRupiah(milestone.amount)}</span>
+                        <span class="text-teal-600/70 text-xs">${milestone.note}</span>
+                    </div>
+                    <button onclick="removeMilestone(${index})" class="text-slate-300 hover:text-rose-400 hover:bg-rose-50 p-1.5 rounded-lg transition focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 `;
@@ -172,24 +186,34 @@
 
         // Tambah Milestone Baru
         const addMilestone = () => {
-            const input = document.getElementById('inputMilestone');
-            const val = parseInt(input.value);
+            const inputVal = document.getElementById('inputMilestone');
+            const inputNote = document.getElementById('inputMilestoneNote');
+            
+            // Kalikan dengan 1000 karena user input dalam ribuan
+            const rawVal = parseInt(inputVal.value);
+            const val = rawVal * 1000; 
+            let note = inputNote.value.trim();
 
             if (isNaN(val) || val <= 0) {
                 alert('Masukkan nominal target yang valid!');
                 return;
             }
 
-            if (milestones.includes(val)) {
+            if (!note) note = 'Target Milestone';
+
+            // Cek apakah nominal sudah ada
+            const exists = milestones.find(m => m.amount === val);
+            if (exists) {
                 alert('Milestone dengan nominal tersebut sudah ada!');
                 return;
             }
 
-            milestones.push(val);
-            // Urutkan dari terkecil ke terbesar
-            milestones.sort((a, b) => a - b);
+            milestones.push({ amount: val, note: note });
+            // Urutkan dari terkecil ke terbesar berdasarkan amount
+            milestones.sort((a, b) => a.amount - b.amount);
             
-            input.value = '';
+            inputVal.value = '';
+            inputNote.value = '';
             saveState();
             updateUI();
         };
@@ -209,13 +233,13 @@
 
             // Kalkulasi Progress Bar
             const progressBar = document.getElementById('progressBar');
-            const maxMilestone = milestones.length > 0 ? Math.max(...milestones) : 0;
+            const maxMilestone = milestones.length > 0 ? milestones[milestones.length - 1].amount : 0;
             
             let progressPercentage = 0;
             if (maxMilestone > 0) {
                 progressPercentage = (currentAmount / maxMilestone) * 100;
             } else if (currentAmount > 0) {
-                progressPercentage = 100; // Jika tidak ada milestone tapi punya uang, bar full
+                progressPercentage = 100;
             }
 
             if (progressPercentage > 100) progressPercentage = 100;
@@ -223,13 +247,13 @@
             
             progressBar.style.width = `${progressPercentage}%`;
 
-            // Logika Warna Progress Bar
+            // Logika Warna Progress Bar (Ganti ke Emerald jika full)
             if(maxMilestone > 0 && currentAmount >= maxMilestone) {
-                progressBar.classList.remove('bg-indigo-500');
-                progressBar.classList.add('bg-green-500');
+                progressBar.classList.remove('bg-teal-400');
+                progressBar.classList.add('bg-emerald-400');
             } else {
-                progressBar.classList.remove('bg-green-500');
-                progressBar.classList.add('bg-indigo-500');
+                progressBar.classList.remove('bg-emerald-400');
+                progressBar.classList.add('bg-teal-400');
             }
 
             // Update List Riwayat
@@ -237,28 +261,29 @@
             historyList.innerHTML = '';
 
             if (history.length === 0) {
-                historyList.innerHTML = '<p class="text-gray-400 text-center text-sm italic py-4">Belum ada riwayat transaksi.</p>';
+                historyList.innerHTML = '<p class="text-slate-400 text-center text-sm italic py-4">Belum ada riwayat.</p>';
             } else {
                 const sortedHistory = [...history].reverse();
                 sortedHistory.forEach(item => {
                     const isAdd = item.type === 'add';
                     const amountText = isAdd ? `+ ${formatRupiah(item.amount)}` : `- ${formatRupiah(item.amount)}`;
-                    const colorClass = isAdd ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+                    const iconColor = isAdd ? 'text-emerald-500 bg-emerald-50' : 'text-rose-500 bg-rose-50';
+                    const textColor = isAdd ? 'text-emerald-600' : 'text-rose-500';
                     const icon = isAdd ? '↑' : '↓';
 
                     const div = document.createElement('div');
-                    div.className = 'flex justify-between items-center p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition';
+                    div.className = 'flex justify-between items-center p-3 border border-slate-50 bg-slate-50/50 rounded-xl hover:bg-slate-100 transition';
                     div.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${colorClass}">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${iconColor}">
                                 ${icon}
                             </div>
                             <div>
-                                <p class="font-semibold text-gray-800 text-sm">${item.note}</p>
-                                <p class="text-xs text-gray-400">${formatDate(item.date)}</p>
+                                <p class="font-medium text-slate-700 text-sm">${item.note}</p>
+                                <p class="text-[10px] text-slate-400">${formatDate(item.date)}</p>
                             </div>
                         </div>
-                        <div class="font-bold text-sm ${isAdd ? 'text-green-600' : 'text-red-600'}">
+                        <div class="font-semibold text-sm ${textColor}">
                             ${amountText}
                         </div>
                     `;
@@ -274,29 +299,34 @@
                 history,
                 milestones
             };
-            localStorage.setItem('celenganStateV2', JSON.stringify(state));
+            localStorage.setItem('celenganStateV3', JSON.stringify(state));
         };
 
-        // Load dari Local Storage
+        // Load dari Local Storage & Migrasi
         const loadState = () => {
-            // Coba ambil versi V2 dulu, jika tidak ada fallback ke versi pertama
-            let savedState = localStorage.getItem('celenganStateV2');
+            let savedState = localStorage.getItem('celenganStateV3');
             
+            // Migrasi dari versi sebelumnya (V2 atau V1) jika ada
             if (!savedState) {
-                const oldState = localStorage.getItem('celenganState');
+                let oldState = localStorage.getItem('celenganStateV2') || localStorage.getItem('celenganState');
                 if (oldState) {
-                    savedState = oldState; // Migrasi data lama
+                    const parsedOld = JSON.parse(oldState);
+                    currentAmount = parsedOld.currentAmount || 0;
+                    history = parsedOld.history || [];
+                    
+                    // Format ulang array angka jadi object jika migrasi dari versi sebelumnya
+                    if(parsedOld.milestones && typeof parsedOld.milestones[0] === 'number') {
+                        milestones = parsedOld.milestones.map(m => ({ amount: m, note: 'Target' }));
+                    } else if (parsedOld.milestones) {
+                        milestones = parsedOld.milestones;
+                    }
+                    saveState(); // Simpan sebagai V3
                 }
-            }
-
-            if (savedState) {
+            } else {
                 const parsed = JSON.parse(savedState);
                 currentAmount = parsed.currentAmount || 0;
                 history = parsed.history || [];
-                // Jika user lama pindah ke versi ini, load array milestone-nya juga
-                if(parsed.milestones) {
-                    milestones = parsed.milestones;
-                }
+                if(parsed.milestones) milestones = parsed.milestones;
             }
             updateUI();
         };
@@ -306,7 +336,9 @@
             const inputAmount = document.getElementById('inputAmount');
             const inputNote = document.getElementById('inputNote');
 
-            const amount = parseInt(inputAmount.value);
+            const rawVal = parseInt(inputAmount.value);
+            // Kalikan input dengan 1000 karena user diminta menginput dalam ribuan
+            const amount = rawVal * 1000; 
             let note = inputNote.value.trim();
 
             if (isNaN(amount) || amount <= 0) {
@@ -344,7 +376,7 @@
 
         // Reset Total
         const clearHistory = () => {
-            if(confirm('Yakin ingin mereset semua saldo tabungan dan riwayat? (Milestone tidak akan terhapus)')) {
+            if(confirm('Yakin ingin mereset saldo dan riwayat kembali ke Rp 0? (Milestone tidak akan terhapus)')) {
                 currentAmount = 0;
                 history = [];
                 saveState();
@@ -352,7 +384,7 @@
             }
         };
 
-        // Inisialisasi saat web diload
+        // Inisialisasi
         window.onload = loadState;
 
     </script>
