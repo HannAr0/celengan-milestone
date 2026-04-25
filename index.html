@@ -41,22 +41,6 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span>🎯</span> Atur Milestone
-            </h3>
-            
-            <div class="flex gap-2 mb-4">
-                <input type="number" id="inputMilestone" placeholder="Tambah target (misal: 20000)" class="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-                <button onclick="addMilestone()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
-                    Tambah
-                </button>
-            </div>
-
-            <div id="milestoneList" class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
             <h3 class="text-lg font-bold mb-4">Catat Transaksi</h3>
             
             <div class="mb-4">
@@ -79,13 +63,29 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold">Riwayat</h3>
                 <button onclick="clearHistory()" class="text-sm text-red-500 hover:text-red-700 font-medium bg-red-50 px-3 py-1 rounded-md">Reset Semua</button>
             </div>
             
             <div id="historyList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span>🎯</span> Atur Milestone
+            </h3>
+            
+            <div class="flex gap-2 mb-4">
+                <input type="number" id="inputMilestone" placeholder="Tambah target (misal: 20000)" class="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                <button onclick="addMilestone()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
+                    Tambah
+                </button>
+            </div>
+
+            <div id="milestoneList" class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
                 </div>
         </div>
     </div>
