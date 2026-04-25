@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celengan Milestone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .progress-transition {
+            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        }
+        /* Sembunyikan scrollbar untuk tampilan lebih bersih di list milestone */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800 pb-10">
+
+    <div class="max-w-md mx-auto pt-10 px-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-indigo-600">Celengan Milestone 🐷</h1>
+            <p class="text-gray-500 mt-2">Pantau dan atur target tabungan harianmu!</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Tabungan</h2>
+            <div class="text-4xl font-bold text-gray-900 mb-6" id="totalAmount">Rp 0</div>
+
+            <div class="relative w-full h-6 bg-gray-200 rounded-full mb-2 overflow-hidden shadow-inner">
+                <div id="progressBar" class="absolute top-0 left-0 h-full bg-indigo-500 progress-transition rounded-full" style="width: 0%;"></div>
+            </div>
+
+            <div class="relative w-full h-8 flex justify-between text-xs font-medium text-gray-400 mt-2" id="milestoneMarkers">
+                </div>
+            <p id="noMilestoneWarning" class="text-xs text-orange-500 mt-2 hidden text-center italic">Belum ada milestone yang diatur.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span>🎯</span> Atur Milestone
+            </h3>
+            
+            <div class="flex gap-2 mb-4">
+                <input type="number" id="inputMilestone" placeholder="Tambah target (misal: 20000)" class="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+                <button onclick="addMilestone()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
+                    Tambah
+                </button>
+            </div>
+
+            <div id="milestoneList" class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <h3 class="text-lg font-bold mb-4">Catat Transaksi</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
+                <input type="number" id="inputAmount" placeholder="Contoh: 15000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Keterangan</label>
+                <input type="text" id="inputNote" placeholder="Contoh: Sisa uang jajan, Beli bensin..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="addTransaction('add')" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+                    <span>+ Nabung</span>
+                </button>
+                <button onclick="addTransaction('subtract')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+                    <span>- Pakai</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Riwayat</h3>
+                <button onclick="clearHistory()" class="text-sm text-red-500 hover:text-red-700 font-medium bg-red-50 px-3 py-1 rounded-md">Reset Semua</button>
+            </div>
+            
+            <div id="historyList" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // State Aplikasi
+        let currentAmount = 0;
+        let history = [];
+        let milestones = [12000, 50000, 150000]; // Nilai default awal
+
+        // Format Rupiah
+        const formatRupiah = (number) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(number);
+        };
+
+        // Format Angka Pendek (Contoh: 15000 -> 15k)
+        const formatShort = (number) => {
+            if (number >= 1000000) return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (number >= 1000) return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+            return number;
+        };
+
+        // Format Tanggal
+        const formatDate = (dateString) => {
+            const options = { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        };
+
+        // Render Marker & Chips Milestone
+        const renderMilestones = () => {
+            const markerContainer = document.getElementById('milestoneMarkers');
+            const listContainer = document.getElementById('milestoneList');
+            const warning = document.getElementById('noMilestoneWarning');
+            
+            markerContainer.innerHTML = '';
+            listContainer.innerHTML = '';
+
+            if (milestones.length === 0) {
+                warning.classList.remove('hidden');
+                return;
+            } else {
+                warning.classList.add('hidden');
+            }
+
+            const maxMilestone = Math.max(...milestones);
+
+            milestones.forEach((milestone, index) => {
+                // 1. Render Marker di Bawah Progress Bar
+                const percentage = (milestone / maxMilestone) * 100;
+                const marker = document.createElement('div');
+                marker.className = 'absolute flex flex-col items-center transform -translate-x-1/2';
+                marker.style.left = `${percentage}%`;
+                
+                const dot = document.createElement('div');
+                dot.className = 'w-1 h-2 bg-gray-300 mb-1 rounded-sm';
+                
+                const text = document.createElement('span');
+                text.innerText = formatShort(milestone);
+                text.className = 'bg-gray-100 px-1 rounded text-gray-500 text-[10px] sm:text-xs';
+
+                marker.appendChild(dot);
+                marker.appendChild(text);
+                markerContainer.appendChild(marker);
+
+                // 2. Render Chips di Panel Pengaturan
+                const chip = document.createElement('div');
+                chip.className = 'flex-shrink-0 flex items-center bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1';
+                chip.innerHTML = `
+                    <span class="text-indigo-700 font-semibold text-sm mr-2">${formatShort(milestone)}</span>
+                    <button onclick="removeMilestone(${index})" class="text-indigo-400 hover:text-red-500 transition focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                `;
+                listContainer.appendChild(chip);
+            });
+        };
+
+        // Tambah Milestone Baru
+        const addMilestone = () => {
+            const input = document.getElementById('inputMilestone');
+            const val = parseInt(input.value);
+
+            if (isNaN(val) || val <= 0) {
+                alert('Masukkan nominal target yang valid!');
+                return;
+            }
+
+            if (milestones.includes(val)) {
+                alert('Milestone dengan nominal tersebut sudah ada!');
+                return;
+            }
+
+            milestones.push(val);
+            // Urutkan dari terkecil ke terbesar
+            milestones.sort((a, b) => a - b);
+            
+            input.value = '';
+            saveState();
+            updateUI();
+        };
+
+        // Hapus Milestone
+        const removeMilestone = (index) => {
+            milestones.splice(index, 1);
+            saveState();
+            updateUI();
+        };
+
+        // Update Tampilan Layar Utama
+        const updateUI = () => {
+            document.getElementById('totalAmount').innerText = formatRupiah(currentAmount);
+
+            renderMilestones();
+
+            // Kalkulasi Progress Bar
+            const progressBar = document.getElementById('progressBar');
+            const maxMilestone = milestones.length > 0 ? Math.max(...milestones) : 0;
+            
+            let progressPercentage = 0;
+            if (maxMilestone > 0) {
+                progressPercentage = (currentAmount / maxMilestone) * 100;
+            } else if (currentAmount > 0) {
+                progressPercentage = 100; // Jika tidak ada milestone tapi punya uang, bar full
+            }
+
+            if (progressPercentage > 100) progressPercentage = 100;
+            if (progressPercentage < 0) progressPercentage = 0;
+            
+            progressBar.style.width = `${progressPercentage}%`;
+
+            // Logika Warna Progress Bar
+            if(maxMilestone > 0 && currentAmount >= maxMilestone) {
+                progressBar.classList.remove('bg-indigo-500');
+                progressBar.classList.add('bg-green-500');
+            } else {
+                progressBar.classList.remove('bg-green-500');
+                progressBar.classList.add('bg-indigo-500');
+            }
+
+            // Update List Riwayat
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-400 text-center text-sm italic py-4">Belum ada riwayat transaksi.</p>';
+            } else {
+                const sortedHistory = [...history].reverse();
+                sortedHistory.forEach(item => {
+                    const isAdd = item.type === 'add';
+                    const amountText = isAdd ? `+ ${formatRupiah(item.amount)}` : `- ${formatRupiah(item.amount)}`;
+                    const colorClass = isAdd ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+                    const icon = isAdd ? '↑' : '↓';
+
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${colorClass}">
+                                ${icon}
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">${item.note}</p>
+                                <p class="text-xs text-gray-400">${formatDate(item.date)}</p>
+                            </div>
+                        </div>
+                        <div class="font-bold text-sm ${isAdd ? 'text-green-600' : 'text-red-600'}">
+                            ${amountText}
+                        </div>
+                    `;
+                    historyList.appendChild(div);
+                });
+            }
+        };
+
+        // Simpan ke Local Storage
+        const saveState = () => {
+            const state = {
+                currentAmount,
+                history,
+                milestones
+            };
+            localStorage.setItem('celenganStateV2', JSON.stringify(state));
+        };
+
+        // Load dari Local Storage
+        const loadState = () => {
+            // Coba ambil versi V2 dulu, jika tidak ada fallback ke versi pertama
+            let savedState = localStorage.getItem('celenganStateV2');
+            
+            if (!savedState) {
+                const oldState = localStorage.getItem('celenganState');
+                if (oldState) {
+                    savedState = oldState; // Migrasi data lama
+                }
+            }
+
+            if (savedState) {
+                const parsed = JSON.parse(savedState);
+                currentAmount = parsed.currentAmount || 0;
+                history = parsed.history || [];
+                // Jika user lama pindah ke versi ini, load array milestone-nya juga
+                if(parsed.milestones) {
+                    milestones = parsed.milestones;
+                }
+            }
+            updateUI();
+        };
+
+        // Handle Transaksi Baru
+        const addTransaction = (type) => {
+            const inputAmount = document.getElementById('inputAmount');
+            const inputNote = document.getElementById('inputNote');
+
+            const amount = parseInt(inputAmount.value);
+            let note = inputNote.value.trim();
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Masukkan nominal yang valid!');
+                return;
+            }
+
+            if (!note) note = type === 'add' ? 'Nabung' : 'Pengeluaran';
+
+            if (type === 'subtract' && amount > currentAmount) {
+                if(!confirm('Pengeluaran lebih besar dari saldo tabungan. Lanjutkan?')) return;
+            }
+
+            if (type === 'add') {
+                currentAmount += amount;
+            } else {
+                currentAmount -= amount;
+                if(currentAmount < 0) currentAmount = 0;
+            }
+
+            history.push({
+                id: Date.now(),
+                type: type,
+                amount: amount,
+                note: note,
+                date: new Date().toISOString()
+            });
+
+            inputAmount.value = '';
+            inputNote.value = '';
+
+            saveState();
+            updateUI();
+        };
+
+        // Reset Total
+        const clearHistory = () => {
+            if(confirm('Yakin ingin mereset semua saldo tabungan dan riwayat? (Milestone tidak akan terhapus)')) {
+                currentAmount = 0;
+                history = [];
+                saveState();
+                updateUI();
+            }
+        };
+
+        // Inisialisasi saat web diload
+        window.onload = loadState;
+
+    </script>
+</body>
+</html>
