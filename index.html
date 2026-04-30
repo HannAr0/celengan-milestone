@@ -3,259 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OSINT PRO | G-A07 Edition</title>
+    <title>OSINT INTELLIGENCE SUITE v5.0</title>
     <style>
         :root {
-            --black: #000000;
-            --dark-grey: #111111;
-            --border: #222222;
-            --accent: #3498db; /* Professional Blue */
-            --text: #ffffff;
-            --dim-text: #888888;
-            --success: #2ecc71;
+            --bg: #000000; --card: #0a0a0a; --accent: #007bff;
+            --text: #ffffff; --dim: #666666; --success: #28a745; --danger: #dc3545;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body {
-            background-color: var(--black);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            background: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px;
         }
+        .header { border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { font-size: 1.2rem; margin: 0; letter-spacing: 1px; color: var(--accent); }
+        .header p { font-size: 0.7rem; margin: 5px 0 0; color: var(--dim); text-transform: uppercase; }
 
-        /* Container & Header */
-        .app-container { padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
-        
-        header {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.5px; font-weight: 700; }
-        header span { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* Input Styling */
-        .input-card {
-            background: var(--dark-grey);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 0.7rem; color: var(--dim-text); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
-        
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .input-box { background: var(--card); border: 1px solid #222; padding: 15px; border-radius: 10px; }
+        label { display: block; font-size: 0.65rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         input {
-            width: 100%;
-            background: #080808;
-            border: 1px solid var(--border);
-            padding: 12px;
-            color: white;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: border 0.3s;
+            width: 100%; background: #000; border: 1px solid #333; padding: 10px; 
+            color: #fff; border-radius: 5px; outline: none; font-size: 0.9rem;
         }
-
         input:focus { border-color: var(--accent); }
 
-        .btn-primary {
-            width: 100%;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
+        .btn-group { display: flex; flex-direction: column; gap: 8px; }
+        button {
+            padding: 15px; border-radius: 8px; border: none; font-weight: bold;
+            cursor: pointer; font-size: 0.85rem; text-transform: uppercase;
         }
+        .btn-main { background: var(--accent); color: white; }
+        .btn-secondary { background: #1a1a1a; color: var(--dim); font-size: 0.7rem; }
 
-        .btn-reset {
-            width: 100%;
-            background: transparent;
-            color: var(--dim-text);
-            border: none;
-            padding: 10px;
-            margin-top: 5px;
-            font-size: 0.8rem;
+        /* Results Styling */
+        .section-tag {
+            font-size: 0.7rem; color: var(--accent); font-weight: bold;
+            margin: 25px 0 10px; border-left: 2px solid var(--accent); padding-left: 8px;
         }
-
-        /* Result Modules */
-        .module-title {
-            font-size: 0.8rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            margin: 30px 0 15px 0;
-            font-weight: 800;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 5px;
+        .res-card {
+            background: var(--card); border: 1px solid #111; padding: 15px;
+            border-radius: 10px; margin-bottom: 10px;
         }
-
-        .result-item {
-            background: var(--dark-grey);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #1a1a1a;
-        }
-
-        .result-item h4 { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; color: #eee; }
+        .res-card h3 { font-size: 0.9rem; margin: 0 0 5px; color: #eee; }
+        .res-card p { font-size: 0.7rem; color: var(--dim); margin-bottom: 12px; font-family: monospace; }
         
-        .query-preview {
-            font-family: 'Monaco', monospace;
-            font-size: 0.7rem;
-            color: var(--dim-text);
-            background: #000;
-            padding: 8px;
-            border-radius: 4px;
-            display: block;
-            margin-bottom: 12px;
-            word-break: break-all;
+        .engine-flex { display: flex; gap: 5px; flex-wrap: wrap; }
+        .engine-flex a {
+            flex: 1; min-width: 60px; text-align: center; background: #111;
+            padding: 8px; border-radius: 5px; color: #fff; text-decoration: none;
+            font-size: 0.7rem; border: 1px solid #222;
         }
+        .engine-flex a:active { background: var(--accent); }
+        .special-link { background: #1c1c1c !important; color: var(--success) !important; border-color: var(--success) !important; }
 
-        .engine-bar { display: flex; gap: 8px; flex-wrap: wrap; }
-        
-        .engine-bar a {
-            flex: 1;
-            min-width: 70px;
-            text-align: center;
-            padding: 8px;
-            background: #222;
-            color: white;
-            text-decoration: none;
-            font-size: 0.75rem;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .engine-bar a:active { background: var(--accent); }
-
-        /* Floating Notes */
-        #notes-trigger {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--accent);
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        /* Hide Scrollbar */
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-
+        @media (max-width: 500px) { .grid-inputs { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <span>Intelligence Framework</span>
-        <h1>OSINT COMMAND</h1>
-    </header>
-
-    <div class="input-card">
-        <div class="field">
-            <label>Full Name</label>
-            <input type="text" id="targetName" placeholder="Nama Lengkap">
-        </div>
-        <div class="field">
-            <label>Username / Alias</label>
-            <input type="text" id="targetUser" placeholder="Handle Sosmed">
-        </div>
-        <div class="field">
-            <label>Phone Number</label>
-            <input type="text" id="targetPhone" placeholder="0812xxxx">
-        </div>
-        <div class="field">
-            <label>Identity (NIK/Email)</label>
-            <input type="text" id="targetExtra" placeholder="NIK atau Email">
-        </div>
-        
-        <button class="btn-primary" onclick="runInvestigation()">Start Reconnaissance</button>
-        <button class="btn-reset" onclick="window.location.reload()">Clear Session</button>
-    </div>
-
-    <div id="output"></div>
+<div class="header">
+    <h1>INTEL SUITE v5.0</h1>
+    <p>Advanced Reconnaissance & Validation</p>
 </div>
 
+<div class="input-box">
+    <div class="grid-inputs">
+        <div>
+            <label>Target Name</label>
+            <input type="text" id="name" placeholder="Nama Lengkap">
+        </div>
+        <div>
+            <label>Username</label>
+            <input type="text" id="user" placeholder="Alias/Handle">
+        </div>
+        <div>
+            <label>Phone Number</label>
+            <input type="text" id="phone" placeholder="0812xxx">
+        </div>
+        <div>
+            <label>NIK / KK Number</label>
+            <input type="text" id="nik" placeholder="16 Digit">
+        </div>
+        <div>
+            <label>Vehicle Plate</label>
+            <input type="text" id="plate" placeholder="B 1234 XXX">
+        </div>
+        <div>
+            <label>IP Address</label>
+            <input type="text" id="ip" placeholder="8.8.8.8">
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn-main" onclick="executeIntelligence()">Execute All Modules</button>
+        <button class="btn-secondary" onclick="location.reload()">Reset System</button>
+    </div>
+</div>
+
+<div id="output"></div>
+
 <script>
-    function runInvestigation() {
-        const name = document.getElementById('targetName').value.trim();
-        const user = document.getElementById('targetUser').value.trim();
-        const phone = document.getElementById('targetPhone').value.trim();
-        const extra = document.getElementById('targetExtra').value.trim();
-        const output = document.getElementById('output');
-        
-        if (!name && !user && !phone && !extra) return alert("Data minimal diperlukan.");
-        
-        output.innerHTML = ""; // Reset
-        
-        const engines = { "Google": "https://google.com/search?q=", "Yandex": "https://yandex.com/search/?text=", "Duck": "https://duckduckgo.com/?q=" };
-
-        // --- MODULE LOGIC ---
-        const addSection = (title) => {
-            const div = document.createElement('div');
-            div.className = 'module-title';
-            div.innerText = title;
-            output.appendChild(div);
+    function executeIntelligence() {
+        const val = {
+            name: document.getElementById('name').value.trim(),
+            user: document.getElementById('user').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            nik: document.getElementById('nik').value.trim(),
+            plate: document.getElementById('plate').value.trim(),
+            ip: document.getElementById('ip').value.trim()
         };
 
-        const addResult = (title, query) => {
+        const out = document.getElementById('output');
+        out.innerHTML = "";
+
+        const createSection = (title) => {
+            const t = document.createElement('div');
+            t.className = 'section-tag';
+            t.innerText = title;
+            out.appendChild(t);
+        };
+
+        const addRes = (title, query, specialUrl = null) => {
             const card = document.createElement('div');
-            card.className = 'result-item';
-            let links = '';
-            for(let [e, url] of Object.entries(engines)) {
-                links += `<a href="${url + encodeURIComponent(query)}" target="_blank">${e}</a>`;
+            card.className = 'res-card';
+            let engines = '';
+            
+            if(specialUrl) {
+                engines = `<a href="${specialUrl}" target="_blank" class="special-link">OPEN DIRECT PORTAL</a>`;
+            } else {
+                const urls = { "Google": "https://google.com/search?q=", "Yandex": "https://yandex.com/search/?text=", "Duck": "https://duckduckgo.com/?q=" };
+                for(let [n, b] of Object.entries(urls)) {
+                    engines += `<a href="${b + encodeURIComponent(query)}" target="_blank">${n}</a>`;
+                }
             }
-            card.innerHTML = `<h4>${title}</h4><span class="query-preview">${query}</span><div class="engine-bar">${links}</div>`;
-            output.appendChild(card);
+
+            card.innerHTML = `<h3>${title}</h3><p>${query || 'Direct Redirect'}</p><div class="engine-flex">${engines}</div>`;
+            out.appendChild(card);
         };
 
-        // 1. DIGITAL FOOTPRINT (Paling Sering Dipakai)
-        addSection("Digital Footprint & Social");
-        if(name) addResult("Identity Search", `"${name}"`);
-        if(user) addResult("Global Username Search", `allintext:"${user}" -site:instagram.com -site:twitter.com`);
-        if(name && extra) addResult("Combined Pivot (Name + Email/NIK)", `"${name}" AND "${extra}"`);
-
-        // 2. LEAKS & SENSITIVE FILES (Pro Level)
-        addSection("Technical Leaks & Docs");
-        if(name) addResult("Sensitive Documents", `"${name}" filetype:pdf OR filetype:xlsx OR filetype:docx OR filetype:csv`);
-        if(user || name) addResult("Server Config/Logs", `intitle:"index of" "${user || name}" OR filetype:log OR filetype:env`);
-        if(extra) addResult("Database Leaks Match", `site:pastebin.com OR site:github.com OR site:ghostbin.com "${extra}"`);
-
-        // 3. INDONESIAN GOVERNMENT & PUBLIC DATA
-        addSection("ID Govt & Legal Search");
-        if(name) {
-            addResult("Govt Records (LPSE/KPU)", `site:go.id "${name}"`);
-            addResult("Court Records (Putusan MA)", `site:mahkamahagung.go.id "${name}"`);
-            addResult("Academic Check (Dikti)", `site:ac.id "${name}"`);
+        // --- MODULE: DUKCAPIL & FAMILY (KK) ---
+        createSection("CIVILIAN & FAMILY RECON");
+        if(val.nik) {
+            addRes("Cek Kartu Keluarga (Gov Index)", `site:go.id OR site:facebook.com "${val.nik}"`);
+            addRes("Data NIK/KTP Terpapar", `filetype:pdf OR filetype:xls "${val.nik}"`);
+        }
+        if(val.name) {
+            addRes("Cari Berdasarkan Nama (General)", `"${val.name}" AND (NIK OR KK OR "No. HP")`);
         }
 
-        // 4. FINANCIAL & COMMERCE
-        addSection("Financial & Commerce Trace");
-        if(phone) {
-            let cleanPhone = phone.replace(/\D/g, '');
-            addResult("WhatsApp Pivot", `site:wa.me "${phone}" OR "${cleanPhone}"`);
-            addResult("E-Commerce Tracker", `site:tokopedia.com OR site:shopee.co.id OR site:olx.co.id "${phone}"`);
+        // --- MODULE: EDUCATION ---
+        createSection("ACADEMIC & EDUCATION HISTORY");
+        if(val.name) {
+            addRes("Cek Data Mahasiswa (PDDikti)", `site:pddikti.kemdikbud.go.id "${val.name}"`);
+            addRes("Riwayat Sekolah / Ijazah", `site:sekolah.data.kemdikbud.go.id OR site:ac.id "${val.name}"`);
         }
-        
-        window.scrollTo({ top: 500, behavior: 'smooth' });
+
+        // --- MODULE: FINANCIAL & BPJS ---
+        createSection("FINANCIAL & HEALTH INSURANCE");
+        if(val.phone) {
+            addRes("Cek Rekening Bank (E-Wallet)", null, `https://cekrekening.id/`);
+            addRes("BPJS Health Check (Hint)", `site:bpjs-kesehatan.go.id "${val.phone}"`);
+        }
+
+        // --- MODULE: VEHICLE & IP ---
+        createSection("LOGISTICS & ASSETS");
+        if(val.plate) {
+            addRes("Cek Plat Nomor (Samsat Search)", `"${val.plate}"`);
+        }
+        if(val.ip) {
+            addRes("Lacak Lokasi IP", null, `https://www.iplocation.net/search?q=${val.ip}`);
+        }
+
+        // --- MODULE: DIGITAL FOOTPRINT & BREACH ---
+        createSection("CYBER SECURITY & BREACH");
+        if(val.user) {
+            addRes("Social Media Tracker", `"${val.user}" site:instagram.com OR site:twitter.com OR site:facebook.com`);
+            addRes("Digital Footprint (Pastebin/Leaks)", `site:pastebin.com OR site:github.com "${val.user}"`);
+        }
+        addRes("Cek Kebocoran Data (Email/User)", null, `https://haveibeenpwned.com/`);
+
+        window.scrollTo({top: 500, behavior: 'smooth'});
     }
 </script>
 
