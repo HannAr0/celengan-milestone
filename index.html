@@ -3,208 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT Pivot Framework v2</title>
+    <title>OSINT Command Center v3.0 | Pro Edition</title>
     <style>
         :root {
-            --bg: #0d1117; --card: #161b22; --text: #c9d1d9;
-            --accent: #58a6ff; --danger: #f85149; --success: #3fb950; --warning: #d29922;
+            --bg-deep: #0b0e14; --bg-panel: #151921; --accent: #00ff41; /* Matrix Green */
+            --text-main: #e0e0e0; --text-dim: #888; --danger: #ff4444; --warning: #ffbb33;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; font-size: 14px; }
-        .container { width: 100%; max-width: 800px; margin: auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        header { text-align: center; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #30363d; }
-        .input-group { background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; color: var(--accent); font-weight: bold; font-size: 0.8em; }
-        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .btn-clear { background: var(--danger); margin-top: 10px; }
+        body { font-family: 'Fira Code', monospace, sans-serif; background: var(--bg-deep); color: var(--text-main); margin: 0; font-size: 13px; line-height: 1.5; }
+        .container { display: flex; flex-direction: column; height: 100vh; max-width: 1200px; margin: auto; }
         
-        .section-title { margin-top: 20px; color: var(--warning); border-left: 4px solid var(--warning); padding-left: 10px; font-size: 1.1em; }
-        .result-card { background: var(--card); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #30363d; position: relative; }
-        .result-card h3 { margin: 0 0 8px 0; font-size: 1em; color: var(--success); }
-        .query-text { font-family: monospace; font-size: 0.75em; color: #8b949e; background: #0d1117; padding: 5px; border-radius: 3px; display: block; margin-bottom: 8px; word-break: break-all; }
-        
-        .engine-links { display: flex; flex-wrap: wrap; gap: 5px; }
-        .engine-links a { padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: var(--text); text-decoration: none; font-size: 0.8em; }
-        .engine-links a:hover { background: var(--accent); color: white; }
-        .copy-btn { position: absolute; right: 10px; top: 10px; font-size: 0.7em; padding: 2px 5px; background: #30363d; color: white; border-radius: 3px; cursor: pointer; }
+        /* Sidebar & Layout */
+        header { padding: 15px; border-bottom: 1px solid var(--accent); background: var(--bg-panel); display: flex; justify-content: space-between; align-items: center; }
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        .input-sidebar { width: 320px; background: var(--bg-panel); padding: 20px; border-right: 1px solid #222; overflow-y: auto; }
+        .content-area { flex: 1; padding: 20px; overflow-y: auto; background: #0d1117; }
 
-        /* Notes Section */
-        #notes-area { background: #1c2128; border-color: var(--warning); height: 100px; font-size: 0.9em; }
+        /* Input Styling */
+        .field-group { margin-bottom: 15px; }
+        label { display: block; font-size: 10px; color: var(--accent); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        input { width: 100%; background: #0b0e14; border: 1px solid #333; padding: 8px; color: var(--accent); border-radius: 3px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(0,255,65,0.3); }
+
+        /* Buttons */
+        .btn { cursor: pointer; padding: 10px; border: none; border-radius: 3px; font-weight: bold; text-transform: uppercase; transition: 0.2s; width: 100%; margin-top: 10px; }
+        .btn-pro { background: var(--accent); color: #000; }
+        .btn-pro:hover { background: #00cc33; box-shadow: 0 0 15px rgba(0,255,65,0.5); }
+        .btn-reset { background: #222; color: #888; font-size: 10px; }
+
+        /* Results Display */
+        .module-sec { margin-bottom: 25px; }
+        .module-header { background: #1c2128; padding: 8px 12px; border-left: 3px solid var(--accent); font-weight: bold; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .card { background: var(--bg-panel); border: 1px solid #222; border-radius: 4px; padding: 12px; margin-bottom: 8px; position: relative; }
+        .card:hover { border-color: #444; }
+        .card h4 { margin: 0 0 5px 0; color: var(--warning); font-size: 12px; }
+        .query-box { font-size: 11px; color: #aaa; background: #0b0e14; padding: 5px; border-radius: 3px; display: block; margin: 5px 0; border: 1px dashed #444; overflow-x: auto; }
         
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+        .links-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .links-grid a { padding: 4px 8px; background: #222; border: 1px solid #333; color: var(--text-main); text-decoration: none; font-size: 10px; border-radius: 2px; }
+        .links-grid a:hover { background: var(--accent); color: #000; }
+        
+        .copy-tag { position: absolute; right: 10px; top: 10px; font-size: 9px; background: #333; padding: 2px 5px; cursor: pointer; border-radius: 2px; }
+
+        /* Terminal Style Footer */
+        footer { background: #000; padding: 5px 15px; font-size: 10px; color: var(--accent); border-top: 1px solid #222; }
+
+        @media (max-width: 768px) {
+            .main-layout { flex-direction: column; }
+            .input-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #222; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h2 style="margin:0">OSINT Pivot v2.0</h2>
-        <p style="margin:5px; font-size:0.8em; opacity:0.7">Connecting the Dots Framework</p>
+        <div style="font-weight: bold; letter-spacing: 2px;">[ ADVANCED OSINT COMMAND CENTER ]</div>
+        <div id="status" style="font-size: 10px; color: var(--accent);">SYSTEM: READY</div>
     </header>
 
-    <div class="input-group">
-        <div class="grid">
-            <div>
-                <label>NAMA LENGKAP</label>
-                <input type="text" id="fullName" placeholder="Target Name">
+    <div class="main-layout">
+        <div class="input-sidebar">
+            <div class="field-group">
+                <label>Target Full Name</label>
+                <input type="text" id="name" placeholder="e.g. Varhan Ardiansyah">
             </div>
-            <div>
-                <label>USERNAME / ALIAS</label>
-                <input type="text" id="username" placeholder="Social handle">
+            <div class="field-group">
+                <label>Primary Username</label>
+                <input type="text" id="user" placeholder="e.g. varhan_01">
+            </div>
+            <div class="field-group">
+                <label>Phone Number (Raw)</label>
+                <input type="text" id="phone" placeholder="0812xxx">
+            </div>
+            <div class="field-group">
+                <label>Email Address</label>
+                <input type="text" id="email" placeholder="target@email.com">
+            </div>
+            <div class="field-group">
+                <label>Location / Org</label>
+                <input type="text" id="loc" placeholder="City or School/Company">
+            </div>
+            <div class="field-group">
+                <label>NIK (Indonesian ID)</label>
+                <input type="text" id="nik" placeholder="16 Digit">
+            </div>
+            
+            <button class="btn btn-pro" onclick="executeScan()">Execute Full Scan</button>
+            <button class="btn btn-reset" onclick="resetForm()">Clear Terminal</button>
+
+            <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 10px;">
+                <label>Notes & Findings</label>
+                <textarea id="notes" style="width: 100%; height: 100px; background: #000; color: #00ff41; border: 1px solid #333; font-size: 11px; padding: 5px;" placeholder="Capture dots here..."></textarea>
             </div>
         </div>
-        <div class="grid">
-            <div>
-                <label>NOMOR HP</label>
-                <input type="text" id="phone" placeholder="0812...">
-            </div>
-            <div>
-                <label>KOTA / LOKASI</label>
-                <input type="text" id="location" placeholder="Surabaya">
+
+        <div class="content-area" id="workspace">
+            <div style="text-align: center; margin-top: 100px; opacity: 0.3;">
+                <h1>AWAITING TARGET INPUT</h1>
+                <p>Enter data in the sidebar to begin reconnaissance.</p>
             </div>
         </div>
-        <label>NIK / NO. IDENTITAS</label>
-        <input type="text" id="nik" placeholder="16 digit NIK">
-        
-        <button onclick="generateOSINT()">START INVESTIGATION</button>
-        <button class="btn-clear" onclick="clearInputs()">RESET DATA</button>
     </div>
 
-    <div class="input-group" style="border-color: var(--warning);">
-        <label style="color: var(--warning);">INVESTIGATION LOG (Notes)</label>
-        <textarea id="notes-area" placeholder="Tulis temuanmu di sini... (Tersimpan otomatis di browser)"></textarea>
-    </div>
-
-    <div id="results"></div>
+    <footer>
+        LOG: <span id="log-msg">Standby...</span>
+    </footer>
 </div>
 
 <script>
-    // Load notes from local storage
-    document.getElementById('notes-area').value = localStorage.getItem('osint_notes') || '';
-    document.getElementById('notes-area').addEventListener('input', (e) => {
-        localStorage.setItem('osint_notes', e.target.value);
-    });
+    // System Initialization
+    const log = (msg) => { document.getElementById('log-msg').innerText = msg; };
+    const notesBox = document.getElementById('notes');
+    notesBox.value = localStorage.getItem('osint_pro_notes') || '';
+    notesBox.oninput = () => localStorage.setItem('osint_pro_notes', notesBox.value);
 
-    function clearInputs() {
-        if(confirm("Hapus semua data input?")) {
+    function resetForm() {
+        if(confirm("Wipe all current session data?")) {
             document.querySelectorAll('input').forEach(i => i.value = '');
-            document.getElementById('results').innerHTML = '';
+            document.getElementById('workspace').innerHTML = '';
+            log("System Cleaned.");
         }
     }
 
-    function copyToClipboard(text) {
+    function copyVal(text) {
         navigator.clipboard.writeText(text);
-        alert("Query copied!");
+        log("Query Copied to Clipboard.");
     }
 
-    function createCard(title, query, engines = true) {
-        const div = document.createElement('div');
-        div.className = 'result-card';
-        
-        let engineHtml = '';
-        if(engines) {
-            const urls = {
-                "Google": "https://www.google.com/search?q=",
-                "Yandex": "https://yandex.com/search/?text=",
-                "DuckDuck": "https://duckduckgo.com/?q=",
-                "Bing": "https://www.bing.com/search?q="
-            };
-            engineHtml = '<div class="engine-links">';
-            for(let [name, base] of Object.entries(urls)) {
-                engineHtml += `<a href="${base + encodeURIComponent(query)}" target="_blank">${name}</a>`;
-            }
-            engineHtml += '</div>';
+    function createModule(title) {
+        const sec = document.createElement('div');
+        sec.className = 'module-sec';
+        sec.innerHTML = `<div class="module-header"><span>${title}</span></div>`;
+        return sec;
+    }
+
+    function createCard(title, dork) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const engines = {
+            "G": "https://www.google.com/search?q=",
+            "Y": "https://yandex.com/search/?text=",
+            "B": "https://www.bing.com/search?q=",
+            "D": "https://duckduckgo.com/?q="
+        };
+
+        let engineLinks = '';
+        for(let [name, url] of Object.entries(engines)) {
+            engineLinks += `<a href="${url + encodeURIComponent(dork)}" target="_blank">${name}</a>`;
         }
 
-        div.innerHTML = `
-            <span class="copy-btn" onclick="copyToClipboard('${query.replace(/'/g, "\\'")}')">COPY</span>
-            <h3>${title}</h3>
-            <span class="query-text">${query}</span>
-            ${engineHtml}
+        card.innerHTML = `
+            <span class="copy-tag" onclick="copyVal('${dork.replace(/'/g, "\\'")}')">COPY</span>
+            <h4>${title}</h4>
+            <code class="query-box">${dork}</code>
+            <div class="links-grid">${engineLinks}</div>
         `;
-        return div;
+        return card;
     }
 
-    function generateOSINT() {
-        const val = {
-            name: document.getElementById('fullName').value.trim(),
-            user: document.getElementById('username').value.trim(),
+    function executeScan() {
+        const data = {
+            name: document.getElementById('name').value.trim(),
+            user: document.getElementById('user').value.trim(),
             phone: document.getElementById('phone').value.trim(),
-            loc: document.getElementById('location').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            loc: document.getElementById('loc').value.trim(),
             nik: document.getElementById('nik').value.trim()
         };
 
-        const res = document.getElementById('results');
-        res.innerHTML = '';
-
-        if (!val.name && !val.user && !val.phone) {
-            alert("Isi data minimal Nama, Username, atau HP!");
+        if(!data.name && !data.user && !data.phone && !data.email) {
+            alert("Insufficient data for reconnaissance.");
             return;
         }
 
-        // --- SECTION 1: DIRECT SOCIAL PIVOT ---
-        const sec1 = document.createElement('div');
-        sec1.innerHTML = '<div class="section-title">SOCIAL MEDIA PIVOT</div>';
-        res.appendChild(sec1);
+        const workspace = document.getElementById('workspace');
+        workspace.innerHTML = '';
+        log("Executing reconnaissance patterns...");
 
-        if (val.user) {
-            const card = document.createElement('div');
-            card.className = 'result-card';
-            card.innerHTML = `<h3>Direct Profile Check (${val.user})</h3>
-                <div class="engine-links">
-                    <a href="https://www.instagram.com/${val.user}" target="_blank">Instagram</a>
-                    <a href="https://twitter.com/${val.user}" target="_blank">X/Twitter</a>
-                    <a href="https://github.com/${val.user}" target="_blank">GitHub</a>
-                    <a href="https://www.facebook.com/public/${val.user}" target="_blank">FB Search</a>
-                </div>`;
-            res.appendChild(card);
+        // --- MODULE 1: IDENTITY FOOTPRINTING ---
+        const modIdentity = createModule("MODULE 1: IDENTITY FOOTPRINTING");
+        if(data.name) {
+            modIdentity.appendChild(createCard("Exact Name Match", `"${data.name}"`));
+            modIdentity.appendChild(createCard("Public Documents (PDF/XLS)", `"${data.name}" (filetype:pdf OR filetype:xls OR filetype:doc)`));
         }
-
-        // --- SECTION 2: CONNECTING THE DOTS (CROSS-REF) ---
-        const sec2 = document.createElement('div');
-        sec2.innerHTML = '<div class="section-title">CONNECTING THE DOTS (CROSS-REF)</div>';
-        res.appendChild(sec2);
-
-        // Dot 1: Nama + Lokasi (Mencari domisili spesifik)
-        if (val.name && val.loc) {
-            res.appendChild(createCard("Nama + Lokasi (Domisili)", `"${val.name}" AND "${val.loc}"`));
+        if(data.user) {
+            modIdentity.appendChild(createCard("Alias Reconnaissance", `allintext:"${data.user}" -site:instagram.com -site:twitter.com`));
         }
+        workspace.appendChild(modIdentity);
 
-        // Dot 2: Nama + Username (Mencari keterkaitan identitas asli & alias)
-        if (val.name && val.user) {
-            res.appendChild(createCard("Nama + Alias (Identity Link)", `"${val.name}" AND "${val.user}"`));
+        // --- MODULE 2: INDONESIAN PUBLIC SECTOR (OSINT.ID) ---
+        const modIndo = createModule("MODULE 2: INDO PUBLIC DATABASE");
+        if(data.name) {
+            modIndo.appendChild(createCard("Govt Services (LPSE/KPU)", `site:go.id "${data.name}"`));
+            modIndo.appendChild(createCard("Academic Records (PDDikti)", `site:ac.id "${data.name}"`));
+            modIndo.appendChild(createCard("Legal/Court (Putusan MA)", `site:mahkamahagung.go.id "${data.name}"`));
         }
-
-        // Dot 3: HP + Username (Mencari postingan jualan/forum)
-        if (val.phone && val.user) {
-            res.appendChild(createCard("Phone + Alias (Forum/Market)", `"${val.phone}" AND "${val.user}"`));
+        if(data.nik) {
+            modIndo.appendChild(createCard("NIK Leak Search", `"${data.nik}"`));
         }
+        workspace.appendChild(modIndo);
 
-        // --- SECTION 3: DEEP DORKING (LEAKS & DOCS) ---
-        const sec3 = document.createElement('div');
-        sec3.innerHTML = '<div class="section-title">DEEP DORKING & LEAKS</div>';
-        res.appendChild(sec3);
-
-        if (val.name) {
-            res.appendChild(createCard("Potensi Dokumen Bocor", `"${val.name}" ext:pdf OR ext:xlsx OR ext:csv OR ext:docx`));
-            res.appendChild(createCard("Directori Pemerintah/Pendidikan", `site:go.id OR site:ac.id "${val.name}"`));
+        // --- MODULE 3: FINANCIAL & E-COMMERCE ---
+        const modFinance = createModule("MODULE 3: COMMERCE & FINANCIAL");
+        if(data.phone || data.user) {
+            const pivot = data.phone || data.user;
+            modFinance.appendChild(createCard("E-Commerce Seller/Reviewer", `site:tokopedia.com OR site:shopee.co.id OR site:olx.co.id "${pivot}"`));
+            modFinance.appendChild(createCard("Forum Activities (Kaskus/Semprot)", `site:kaskus.co.id OR site:modifikasi.com "${pivot}"`));
         }
+        workspace.appendChild(modFinance);
 
-        if (val.phone) {
-            let cleanPhone = val.phone.replace(/\D/g, '');
-            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
-            
-            res.appendChild(createCard("Jejak Kontak WhatsApp", `site:wa.me "${val.phone}" OR "${cleanPhone}"`));
-            res.appendChild(createCard("GetContact / TrueCaller Web Hint", `"${val.phone}" (tags OR "name is" OR "dilihat sebagai")`));
+        // --- MODULE 4: TECHNICAL DATA & LEAKS (PRO) ---
+        const modTechnical = createModule("MODULE 4: DEEP RECON & LEAKS");
+        if(data.email) {
+            modTechnical.appendChild(createCard("Email on Paste Sites", `site:pastebin.com OR site:ghostbin.com OR site:controlc.com "${data.email}"`));
+            modTechnical.appendChild(createCard("Trello/Github Leak", `site:trello.com OR site:github.com OR site:gitlab.com "${data.email}"`));
         }
-
-        if (val.nik) {
-            res.appendChild(createCard("Cek NIK di Database Publik", `"${val.nik}"` || `site:kpu.go.id OR site:pddikti.kemdikbud.go.id "${val.nik}"`));
+        if(data.user || data.name) {
+            const target = data.user || data.name;
+            modTechnical.appendChild(createCard("Directory Listing (Index of)", `intitle:"index of" "${target}"`));
+            modTechnical.appendChild(createCard("Exposed Config Files", `filetype:env OR filetype:conf OR filetype:log "${target}"`));
         }
+        workspace.appendChild(modTechnical);
 
-        // Scroll to results
-        res.scrollIntoView({ behavior: 'smooth' });
+        // --- MODULE 5: SOCIAL PIVOTING ---
+        const modSocial = createModule("MODULE 5: SOCIAL GRAPH PIVOT");
+        if(data.user) {
+            const socCard = document.createElement('div');
+            socCard.className = 'card';
+            socCard.innerHTML = `<h4>Direct Link Pivoting</h4><div class="links-grid">
+                <a href="https://www.facebook.com/search/top/?q=${encodeURIComponent(data.name || data.user)}" target="_blank">FB Search</a>
+                <a href="https://www.instagram.com/${data.user}" target="_blank">IG Profile</a>
+                <a href="https://twitter.com/${data.user}" target="_blank">X Profile</a>
+                <a href="https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(data.name)}" target="_blank">LinkedIn</a>
+            </div>`;
+            modSocial.appendChild(socCard);
+        }
+        workspace.appendChild(modSocial);
+
+        log("Scan Complete. Analyzing connections...");
     }
 </script>
 
