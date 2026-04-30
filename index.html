@@ -2,188 +2,88 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OSINT INTELLIGENCE SUITE v5.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBA Web Player - Simple Version</title>
     <style>
-        :root {
-            --bg: #000000; --card: #0a0a0a; --accent: #007bff;
-            --text: #ffffff; --dim: #666666; --success: #28a745; --danger: #dc3545;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            background: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px;
-        }
-        .header { border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
-        .header h1 { font-size: 1.2rem; margin: 0; letter-spacing: 1px; color: var(--accent); }
-        .header p { font-size: 0.7rem; margin: 5px 0 0; color: var(--dim); text-transform: uppercase; }
-
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .input-box { background: var(--card); border: 1px solid #222; padding: 15px; border-radius: 10px; }
-        label { display: block; font-size: 0.65rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
-        input {
-            width: 100%; background: #000; border: 1px solid #333; padding: 10px; 
-            color: #fff; border-radius: 5px; outline: none; font-size: 0.9rem;
-        }
-        input:focus { border-color: var(--accent); }
-
-        .btn-group { display: flex; flex-direction: column; gap: 8px; }
-        button {
-            padding: 15px; border-radius: 8px; border: none; font-weight: bold;
-            cursor: pointer; font-size: 0.85rem; text-transform: uppercase;
-        }
-        .btn-main { background: var(--accent); color: white; }
-        .btn-secondary { background: #1a1a1a; color: var(--dim); font-size: 0.7rem; }
-
-        /* Results Styling */
-        .section-tag {
-            font-size: 0.7rem; color: var(--accent); font-weight: bold;
-            margin: 25px 0 10px; border-left: 2px solid var(--accent); padding-left: 8px;
-        }
-        .res-card {
-            background: var(--card); border: 1px solid #111; padding: 15px;
-            border-radius: 10px; margin-bottom: 10px;
-        }
-        .res-card h3 { font-size: 0.9rem; margin: 0 0 5px; color: #eee; }
-        .res-card p { font-size: 0.7rem; color: var(--dim); margin-bottom: 12px; font-family: monospace; }
-        
-        .engine-flex { display: flex; gap: 5px; flex-wrap: wrap; }
-        .engine-flex a {
-            flex: 1; min-width: 60px; text-align: center; background: #111;
-            padding: 8px; border-radius: 5px; color: #fff; text-decoration: none;
-            font-size: 0.7rem; border: 1px solid #222;
-        }
-        .engine-flex a:active { background: var(--accent); }
-        .special-link { background: #1c1c1c !important; color: var(--success) !important; border-color: var(--success) !important; }
-
-        @media (max-width: 500px) { .grid-inputs { grid-template-columns: 1fr; } }
+        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; margin: 0; }
+        #emulator-wrapper { width: 100%; max-width: 800px; height: 500px; margin: 20px auto; background: #000; border: 2px solid #444; }
+        .controls { background: #252525; padding: 15px; margin: 10px; border-radius: 8px; display: inline-block; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; background: #27ae60; color: white; font-weight: bold; }
+        button.download { background: #2980b9; }
+        button.upload { background: #8e44ad; }
+        input[type="file"] { display: none; }
+        .label-btn { padding: 10px 15px; background: #e67e22; border-radius: 4px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>INTEL SUITE v5.0</h1>
-    <p>Advanced Reconnaissance & Validation</p>
-</div>
+    <h1>GBA Player (Tanpa Ribet)</h1>
 
-<div class="input-box">
-    <div class="grid-inputs">
-        <div>
-            <label>Target Name</label>
-            <input type="text" id="name" placeholder="Nama Lengkap">
-        </div>
-        <div>
-            <label>Username</label>
-            <input type="text" id="user" placeholder="Alias/Handle">
-        </div>
-        <div>
-            <label>Phone Number</label>
-            <input type="text" id="phone" placeholder="0812xxx">
-        </div>
-        <div>
-            <label>NIK / KK Number</label>
-            <input type="text" id="nik" placeholder="16 Digit">
-        </div>
-        <div>
-            <label>Vehicle Plate</label>
-            <input type="text" id="plate" placeholder="B 1234 XXX">
-        </div>
-        <div>
-            <label>IP Address</label>
-            <input type="text" id="ip" placeholder="8.8.8.8">
-        </div>
+    <div class="controls">
+        <label class="label-btn"> Pilih File .GBA
+            <input type="file" id="rom-file" accept=".gba">
+        </label>
+        
+        <button class="download" onclick="downloadSave()">⬇️ Download Save (.sav)</button>
+        <label class="label-btn" style="background:#8e44ad"> ⬆️ Upload Save
+            <input type="file" id="upload-save" accept=".sav">
+        </label>
     </div>
-    <div class="btn-group">
-        <button class="btn-main" onclick="executeIntelligence()">Execute All Modules</button>
-        <button class="btn-secondary" onclick="location.reload()">Reset System</button>
+
+    <div id="emulator-wrapper">
+        <div id="game"></div>
     </div>
-</div>
 
-<div id="output"></div>
+    <p style="color: #888; font-size: 0.8em;">Data otomatis tersimpan di browser ini (Auto-save).</p>
 
-<script>
-    function executeIntelligence() {
-        const val = {
-            name: document.getElementById('name').value.trim(),
-            user: document.getElementById('user').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            nik: document.getElementById('nik').value.trim(),
-            plate: document.getElementById('plate').value.trim(),
-            ip: document.getElementById('ip').value.trim()
+    <script>
+        let EJS_player;
+
+        document.getElementById('rom-file').onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            window.EJS_player = "#game";
+            window.EJS_core = "gba"; 
+            window.EJS_gameUrl = URL.createObjectURL(file);
+            window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+            window.EJS_startOnLoaded = true;
+
+            // Memuat loader emulator
+            let script = document.createElement("script");
+            script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+            document.head.appendChild(script);
         };
 
-        const out = document.getElementById('output');
-        out.innerHTML = "";
-
-        const createSection = (title) => {
-            const t = document.createElement('div');
-            t.className = 'section-tag';
-            t.innerText = title;
-            out.appendChild(t);
-        };
-
-        const addRes = (title, query, specialUrl = null) => {
-            const card = document.createElement('div');
-            card.className = 'res-card';
-            let engines = '';
+        // Fungsi Download Save Data (.sav)
+        function downloadSave() {
+            if (!window.EJS_emulator) return alert("Jalankan game dulu!");
             
-            if(specialUrl) {
-                engines = `<a href="${specialUrl}" target="_blank" class="special-link">OPEN DIRECT PORTAL</a>`;
-            } else {
-                const urls = { "Google": "https://google.com/search?q=", "Yandex": "https://yandex.com/search/?text=", "Duck": "https://duckduckgo.com/?q=" };
-                for(let [n, b] of Object.entries(urls)) {
-                    engines += `<a href="${b + encodeURIComponent(query)}" target="_blank">${n}</a>`;
-                }
-            }
+            // EmulatorJS menyimpan file secara virtual dengan nama 'game.sav'
+            const data = window.EJS_emulator.getFile("game.sav");
+            if (!data) return alert("Belum ada save data!");
 
-            card.innerHTML = `<h3>${title}</h3><p>${query || 'Direct Redirect'}</p><div class="engine-flex">${engines}</div>`;
-            out.appendChild(card);
+            const blob = new Blob([data], { type: "application/octet-stream" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "savegame.sav";
+            a.click();
+        }
+
+        // Fungsi Upload Save Data (.sav)
+        document.getElementById('upload-save').onchange = function(e) {
+            if (!window.EJS_emulator) return alert("Jalankan game dulu baru upload save!");
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const saveData = new Uint8Array(event.target.result);
+                window.EJS_emulator.setFile("game.sav", saveData);
+                alert("Save data berhasil di-upload! Silakan restart game atau load di dalam menu game.");
+            };
+            reader.readAsArrayBuffer(file);
         };
-
-        // --- MODULE: DUKCAPIL & FAMILY (KK) ---
-        createSection("CIVILIAN & FAMILY RECON");
-        if(val.nik) {
-            addRes("Cek Kartu Keluarga (Gov Index)", `site:go.id OR site:facebook.com "${val.nik}"`);
-            addRes("Data NIK/KTP Terpapar", `filetype:pdf OR filetype:xls "${val.nik}"`);
-        }
-        if(val.name) {
-            addRes("Cari Berdasarkan Nama (General)", `"${val.name}" AND (NIK OR KK OR "No. HP")`);
-        }
-
-        // --- MODULE: EDUCATION ---
-        createSection("ACADEMIC & EDUCATION HISTORY");
-        if(val.name) {
-            addRes("Cek Data Mahasiswa (PDDikti)", `site:pddikti.kemdikbud.go.id "${val.name}"`);
-            addRes("Riwayat Sekolah / Ijazah", `site:sekolah.data.kemdikbud.go.id OR site:ac.id "${val.name}"`);
-        }
-
-        // --- MODULE: FINANCIAL & BPJS ---
-        createSection("FINANCIAL & HEALTH INSURANCE");
-        if(val.phone) {
-            addRes("Cek Rekening Bank (E-Wallet)", null, `https://cekrekening.id/`);
-            addRes("BPJS Health Check (Hint)", `site:bpjs-kesehatan.go.id "${val.phone}"`);
-        }
-
-        // --- MODULE: VEHICLE & IP ---
-        createSection("LOGISTICS & ASSETS");
-        if(val.plate) {
-            addRes("Cek Plat Nomor (Samsat Search)", `"${val.plate}"`);
-        }
-        if(val.ip) {
-            addRes("Lacak Lokasi IP", null, `https://www.iplocation.net/search?q=${val.ip}`);
-        }
-
-        // --- MODULE: DIGITAL FOOTPRINT & BREACH ---
-        createSection("CYBER SECURITY & BREACH");
-        if(val.user) {
-            addRes("Social Media Tracker", `"${val.user}" site:instagram.com OR site:twitter.com OR site:facebook.com`);
-            addRes("Digital Footprint (Pastebin/Leaks)", `site:pastebin.com OR site:github.com "${val.user}"`);
-        }
-        addRes("Cek Kebocoran Data (Email/User)", null, `https://haveibeenpwned.com/`);
-
-        window.scrollTo({top: 500, behavior: 'smooth'});
-    }
-</script>
-
+    </script>
 </body>
 </html>
