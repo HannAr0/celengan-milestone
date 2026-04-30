@@ -3,84 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OSINT INTELLIGENCE SUITE v6.0 - ENTERPRISE</title>
+    <title>ADVANCED MULTI-ENGINE DORKING SUITE</title>
     <style>
         :root {
-            --bg: #050505; --card: #0d0d0d; --accent: #00ff88; --accent-hover: #00cc6a;
-            --text: #e0e0e0; --dim: #888888; --success: #28a745; --danger: #dc3545;
-            --border: #1f1f1f;
+            --bg-main: #0d1117;
+            --bg-card: #161b22;
+            --border: #30363d;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #1f6feb;
+            --success: #238636;
+            --danger: #da3633;
+            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
         body {
-            background: var(--bg); color: var(--text);
-            font-family: 'Consolas', 'Courier New', monospace; 
-            margin: 0; padding: 20px; line-height: 1.5;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.5;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
         /* Header */
-        .header { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .header h1 { font-size: 1.5rem; margin: 0; letter-spacing: 2px; color: var(--accent); }
-        .header p { font-size: 0.75rem; margin: 5px 0 0; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
-        .status-badge { font-size: 0.7rem; background: rgba(0, 255, 136, 0.1); color: var(--accent); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--accent); }
+        .header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header h1 { font-family: var(--font-mono); font-size: 1.5rem; color: var(--accent); letter-spacing: -0.5px; }
+        .header p { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .badge { background: rgba(88, 166, 255, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; border: 1px solid var(--accent); font-family: var(--font-mono); font-weight: bold; }
 
-        /* Input Section */
-        .dashboard { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        label { display: block; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; margin-bottom: 6px; font-weight: bold; letter-spacing: 1px; }
-        input {
-            width: 100%; background: #000; border: 1px solid #333; padding: 12px; 
-            color: var(--accent); border-radius: 4px; outline: none; font-size: 0.9rem; font-family: inherit;
-            transition: border 0.3s ease;
+        /* Input Grid */
+        .target-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
         }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
-        input::placeholder { color: #333; }
-
-        /* Buttons */
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button {
-            padding: 12px 20px; border-radius: 4px; border: none; font-weight: bold;
-            cursor: pointer; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-            transition: all 0.3s ease; flex: 1; font-family: inherit;
-        }
-        .btn-main { background: var(--accent); color: #000; }
-        .btn-main:hover { background: var(--accent-hover); }
-        .btn-secondary { background: #1a1a1a; color: var(--dim); border: 1px solid #333; }
-        .btn-secondary:hover { background: #222; color: #fff; }
-
-        /* Results Display */
-        #output { margin-top: 30px; }
-        .section-tag {
-            font-size: 0.8rem; color: var(--accent); font-weight: bold;
-            margin: 30px 0 15px; border-bottom: 1px dashed var(--border); padding-bottom: 5px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
-        .res-card {
-            background: var(--card); border: 1px solid var(--border); padding: 15px;
-            border-radius: 6px; transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .res-card:hover { border-color: #333; transform: translateY(-2px); }
-        .res-card h3 { font-size: 0.85rem; margin: 0 0 8px; color: #fff; text-transform: uppercase; }
-        .res-card p { 
-            font-size: 0.75rem; color: var(--dim); margin-bottom: 15px; 
-            background: #000; padding: 8px; border-radius: 4px; border: 1px solid #111;
-            word-break: break-all;
-        }
+        .panel-title { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-weight: 600; }
         
-        .engine-flex { display: flex; gap: 8px; flex-wrap: wrap; }
-        .engine-flex a {
-            flex: 1; min-width: 70px; text-align: center; background: #0a0a0a;
-            padding: 8px; border-radius: 4px; color: var(--text); text-decoration: none;
-            font-size: 0.75rem; border: 1px solid #222; transition: all 0.2s ease;
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
         }
-        .engine-flex a:hover { background: #1a1a1a; border-color: var(--dim); }
-        .special-link { background: rgba(0, 255, 136, 0.05) !important; color: var(--accent) !important; border-color: rgba(0, 255, 136, 0.3) !important; font-weight: bold; }
-        .special-link:hover { background: rgba(0, 255, 136, 0.15) !important; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; font-family: var(--font-mono); }
+        .input-group input {
+            width: 100%; background: var(--bg-main); border: 1px solid var(--border);
+            padding: 10px 12px; color: var(--text-main); border-radius: 6px;
+            font-family: var(--font-mono); font-size: 0.85rem; outline: none; transition: border 0.2s;
+        }
+        .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+        
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        button {
+            padding: 10px 16px; border-radius: 6px; border: 1px solid transparent;
+            font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-primary { background: var(--success); color: #fff; border-color: rgba(240,246,252,0.1); }
+        .btn-primary:hover { background: #2ea043; }
+        .btn-clear { background: var(--bg-main); color: var(--text-muted); border-color: var(--border); }
+        .btn-clear:hover { border-color: var(--text-muted); color: var(--text-main); }
 
-        @media (max-width: 600px) {
-            .btn-group { flex-direction: column; }
-            .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        /* Dork Output Sections */
+        .dork-category { margin-bottom: 30px; display: none; }
+        .category-title {
+            font-size: 1rem; color: var(--text-main); border-bottom: 1px solid var(--border);
+            padding-bottom: 8px; margin-bottom: 15px; font-family: var(--font-mono);
+        }
+
+        .dork-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .dork-card:hover { border-color: #58a6ff50; }
+        
+        .dork-header { display: flex; justify-content: space-between; align-items: center; }
+        .dork-title { font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+        
+        .dork-code-container { display: flex; gap: 10px; }
+        .dork-code {
+            flex-grow: 1; background: var(--bg-main); padding: 10px; border-radius: 6px;
+            border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.8rem;
+            color: #7ee787; word-break: break-all;
+        }
+        .btn-copy {
+            background: var(--bg-main); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 0 15px; cursor: pointer; border-radius: 6px;
+        }
+        .btn-copy:hover { color: var(--text-main); border-color: var(--text-muted); }
+
+        /* Multi-Engine Execution */
+        .engine-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+        .engine-btn {
+            background: var(--bg-main); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; text-decoration: none;
+            display: inline-block; font-family: var(--font-mono);
+        }
+        .engine-btn.google:hover { border-color: #4285F4; color: #4285F4; }
+        .engine-btn.yandex:hover { border-color: #FC3F1D; color: #FC3F1D; }
+        .engine-btn.bing:hover { border-color: #0089D6; color: #0089D6; }
+        .engine-btn.duck:hover { border-color: #DE5833; color: #DE5833; }
+
+        #empty-state {
+            text-align: center; padding: 40px; color: var(--text-muted);
+            border: 1px dashed var(--border); border-radius: 8px; font-family: var(--font-mono);
+        }
+
+        @media (max-width: 768px) {
+            .dork-code-container { flex-direction: column; }
+            .btn-copy { padding: 10px; }
         }
     </style>
 </head>
@@ -89,210 +141,216 @@
 <div class="container">
     <div class="header">
         <div>
-            <h1>INTEL SUITE v6.0</h1>
-            <p>Advanced Enterprise Reconnaissance & Data Correlation</p>
+            <h1>ADVANCED DORKING SUITE</h1>
+            <p>Multi-Engine Boolean Query Generator</p>
         </div>
-        <div class="status-badge">SYSTEM: ONLINE</div>
+        <div class="badge">LIVE GENERATION MODE</div>
     </div>
 
-    <div class="dashboard">
-        <div class="grid-inputs">
-            <div>
-                <label>Target Name</label>
+    <div class="target-panel">
+        <div class="panel-title">Target Parameters</div>
+        <div class="input-grid">
+            <div class="input-group">
+                <label>Nama Lengkap</label>
                 <input type="text" id="name" placeholder="John Doe">
             </div>
-            <div>
+            <div class="input-group">
                 <label>Username / Alias</label>
-                <input type="text" id="user" placeholder="johndoe99">
+                <input type="text" id="username" placeholder="johndoe99">
             </div>
-            <div>
+            <div class="input-group">
                 <label>Email Address</label>
                 <input type="text" id="email" placeholder="target@email.com">
             </div>
-            <div>
+            <div class="input-group">
                 <label>Phone Number</label>
-                <input type="text" id="phone" placeholder="0812... / 62812...">
+                <input type="text" id="phone" placeholder="0812 / 62812">
             </div>
-            <div>
-                <label>NIK / National ID</label>
-                <input type="text" id="nik" placeholder="16 Digit Number">
-            </div>
-            <div>
-                <label>Vehicle Plate</label>
-                <input type="text" id="plate" placeholder="B 1234 XXX">
-            </div>
-            <div>
-                <label>IP Address</label>
-                <input type="text" id="ip" placeholder="8.8.8.8">
-            </div>
-            <div>
+            <div class="input-group">
                 <label>Domain / Company</label>
                 <input type="text" id="domain" placeholder="example.com">
             </div>
+            <div class="input-group">
+                <label>NIK / National ID</label>
+                <input type="text" id="nik" placeholder="16 Digit Number">
+            </div>
         </div>
-        <div class="btn-group">
-            <button class="btn-main" onclick="executeIntelligence()">Execute Global Recon</button>
-            <button class="btn-secondary" onclick="clearData()">Purge Cache & Reset</button>
+        <div class="actions">
+            <button class="btn-primary" onclick="generateDorks()">Generate Dorks</button>
+            <button class="btn-clear" onclick="clearAll()">Clear Data</button>
         </div>
     </div>
 
-    <div id="output"></div>
+    <div id="empty-state">Masukkan setidaknya satu parameter target untuk melakukan generate dork.</div>
+    <div id="results-container"></div>
+
 </div>
 
 <script>
-    function clearData() {
-        document.querySelectorAll('input').forEach(input => input.value = '');
-        document.getElementById('output').innerHTML = '';
+    const engines = {
+        Google: "https://www.google.com/search?q=",
+        Yandex: "https://yandex.com/search/?text=",
+        Bing: "https://www.bing.com/search?q=",
+        Duck: "https://duckduckgo.com/?q="
+    };
+
+    function clearAll() {
+        document.querySelectorAll('input').forEach(i => i.value = '');
+        document.getElementById('results-container').innerHTML = '';
+        document.getElementById('empty-state').style.display = 'block';
     }
 
-    // Helper to format phone numbers for better dorking
-    function getPhoneVariations(phone) {
-        let clean = phone.replace(/\D/g, '');
-        if (!clean) return "";
-        let var1 = clean;
-        let var2 = clean.startsWith('0') ? '62' + clean.substring(1) : clean;
-        let var3 = clean.startsWith('62') ? '0' + clean.substring(2) : clean;
-        let var4 = "+" + var2;
-        return `"${var1}" OR "${var2}" OR "${var3}" OR "${var4}"`;
+    async function copyToClipboard(text, btn) {
+        try {
+            await navigator.clipboard.writeText(text);
+            const originalText = btn.innerText;
+            btn.innerText = 'Copied!';
+            btn.style.color = 'var(--success)';
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.color = '';
+            }, 1500);
+        } catch (err) {
+            console.error('Failed to copy', err);
+        }
     }
 
-    function executeIntelligence() {
-        const val = {
+    function createCategory(title) {
+        const wrap = document.createElement('div');
+        wrap.className = 'dork-category';
+        wrap.style.display = 'block';
+        wrap.innerHTML = `<div class="category-title">[+] ${title}</div>`;
+        return wrap;
+    }
+
+    function createDorkCard(title, dorkString) {
+        let engineLinks = '';
+        for (const [name, url] of Object.entries(engines)) {
+            const classEngine = name.toLowerCase();
+            engineLinks += `<a href="${url}${encodeURIComponent(dorkString)}" target="_blank" class="engine-btn ${classEngine}">Execute on ${name}</a>`;
+        }
+
+        const safeDorkString = dorkString.replace(/"/g, '&quot;');
+
+        const card = document.createElement('div');
+        card.className = 'dork-card';
+        card.innerHTML = `
+            <div class="dork-header">
+                <span class="dork-title">${title}</span>
+            </div>
+            <div class="dork-code-container">
+                <div class="dork-code">${dorkString}</div>
+                <button class="btn-copy" onclick="copyToClipboard('${safeDorkString}', this)">Copy</button>
+            </div>
+            <div class="engine-bar">
+                ${engineLinks}
+            </div>
+        `;
+        return card;
+    }
+
+    function generateDorks() {
+        const data = {
             name: document.getElementById('name').value.trim(),
-            user: document.getElementById('user').value.trim(),
+            username: document.getElementById('username').value.trim(),
             email: document.getElementById('email').value.trim(),
             phone: document.getElementById('phone').value.trim(),
-            nik: document.getElementById('nik').value.trim(),
-            plate: document.getElementById('plate').value.trim(),
-            ip: document.getElementById('ip').value.trim(),
-            domain: document.getElementById('domain').value.trim()
+            domain: document.getElementById('domain').value.trim(),
+            nik: document.getElementById('nik').value.trim()
         };
 
-        const out = document.getElementById('output');
-        out.innerHTML = "";
+        const container = document.getElementById('results-container');
+        container.innerHTML = '';
 
-        let currentGrid = null;
-
-        const createSection = (title) => {
-            const t = document.createElement('div');
-            t.className = 'section-tag';
-            t.innerText = `[+] ${title}`;
-            out.appendChild(t);
-            
-            currentGrid = document.createElement('div');
-            currentGrid.className = 'res-grid';
-            out.appendChild(currentGrid);
-        };
-
-        const addRes = (title, query, specialUrl = null) => {
-            const card = document.createElement('div');
-            card.className = 'res-card';
-            let engines = '';
-            
-            if(specialUrl) {
-                engines = `<a href="${specialUrl}" target="_blank" class="special-link">LAUNCH EXTERNAL PORTAL</a>`;
-            } else {
-                const urls = { 
-                    "Google": "https://google.com/search?q=", 
-                    "Yandex": "https://yandex.com/search/?text=", 
-                    "Bing": "https://www.bing.com/search?q=" 
-                };
-                for(let [n, b] of Object.entries(urls)) {
-                    engines += `<a href="${b + encodeURIComponent(query)}" target="_blank">${n}</a>`;
-                }
-            }
-
-            card.innerHTML = `<h3>${title}</h3><p>${query || specialUrl}</p><div class="engine-flex">${engines}</div>`;
-            currentGrid.appendChild(card);
-        };
-
-        let hasData = Object.values(val).some(v => v !== "");
+        const hasData = Object.values(data).some(val => val !== '');
         if (!hasData) {
-            out.innerHTML = `<div style="color: var(--danger); margin-top: 20px; text-align: center; font-size: 0.9rem;">[ERROR] NO TARGET DATA PROVIDED.</div>`;
+            document.getElementById('empty-state').style.display = 'block';
             return;
+        } else {
+            document.getElementById('empty-state').style.display = 'none';
         }
 
-        // --- MODULE: IDENTITY & CIVIL RECORDS ---
-        if(val.nik || val.name) {
-            createSection("Identity & Civil Records (Dukcapil/KPU)");
-            if(val.nik) {
-                addRes("Dukcapil/KPU Deep Search", `intext:"${val.nik}" site:go.id OR site:desa.id`);
-                addRes("Exposed NIK Files (PDF/XLS/CSV)", `"${val.nik}" ext:pdf OR ext:xls OR ext:xlsx OR ext:csv`);
-            }
-            if(val.name && val.nik) {
-                addRes("Name & NIK Correlation", `"${val.name}" AND "${val.nik}"`);
-            } else if (val.name) {
-                addRes("General Name Mentions (Gov)", `"${val.name}" site:go.id ext:pdf`);
-                addRes("Academic Records (PDDikti)", `site:pddikti.kemdikbud.go.id "${val.name}"`);
-            }
+        // --- 1. DOCUMENTS & LEAKS ---
+        const catDocs = createCategory('EXPOSED DOCUMENTS & LEAKED DATABASES');
+        let docsAdded = false;
+
+        if (data.email || data.username || data.domain) {
+            const target = data.email || data.domain || data.username;
+            catDocs.appendChild(createDorkCard('Database Dumps (SQL/CSV/Log)', `"${target}" (ext:sql OR ext:csv OR ext:log OR ext:txt) intext:"password" | intext:"hash"`));
+            catDocs.appendChild(createDorkCard('Pastebin / Code Repo Leaks', `"${target}" site:pastebin.com OR site:github.com OR site:gitlab.com`));
+            catDocs.appendChild(createDorkCard('Cloud Storage Exposure', `"${target}" site:s3.amazonaws.com OR site:drive.google.com OR site:docs.google.com`));
+            docsAdded = true;
+        }
+        
+        if (data.name || data.nik) {
+            const target = data.nik ? `"${data.nik}"` : `"${data.name}"`;
+            catDocs.appendChild(createDorkCard('Confidential Government / Office PDF/XLS', `${target} (ext:pdf OR ext:xls OR ext:xlsx) (intext:"rahasia" OR intext:"confidential" OR site:go.id)`));
+            docsAdded = true;
         }
 
-        // --- MODULE: DIGITAL FOOTPRINT & COMMS ---
-        if(val.user || val.email || val.phone) {
-            createSection("Digital Footprint & Communications");
-            
-            if(val.email) {
-                addRes("Email Exact Match Search", `intext:"${val.email}" OR "${val.email}"`);
-                addRes("Epios (Email OSINT Portal)", null, `https://epios.com/`);
-                addRes("Hunter.io (Domain/Email)", null, `https://hunter.io/search/${val.email.split('@')[1] || val.email}`);
-            }
-            
-            if(val.user) {
-                addRes("Social Media Indexing", `"${val.user}" site:instagram.com OR site:twitter.com OR site:tiktok.com OR site:linkedin.com`);
-                addRes("Instant Username Search", null, `https://instantusername.com/?q=${val.user}`);
-                addRes("Source Code / Repo Leaks", `"${val.user}" site:github.com OR site:gitlab.com OR site:pastebin.com`);
-            }
+        if (docsAdded) container.appendChild(catDocs);
 
-            if(val.phone) {
-                const phoneDork = getPhoneVariations(val.phone);
-                addRes("Phone Number Variations Dork", phoneDork);
-                addRes("Truecaller Web Tracker", null, `https://www.truecaller.com/search/id/${val.phone}`);
-                addRes("Sync.Me Reverse Lookup", null, `https://sync.me/search/?number=${val.phone}`);
-                addRes("GetContact Web (Requires Login)", null, `https://web.getcontact.com/`);
-            }
+
+        // --- 2. SOCIAL MEDIA & PROFILES ---
+        const catSocial = createCategory('SOCIAL MEDIA & PROFESSIONAL PROFILES');
+        let socialAdded = false;
+
+        if (data.username) {
+            catSocial.appendChild(createDorkCard('Cross-Platform Profiling', `"${data.username}" (site:linkedin.com OR site:twitter.com OR site:instagram.com OR site:tiktok.com OR site:facebook.com)`));
+            catSocial.appendChild(createDorkCard('Gaming & Forums', `"${data.username}" (site:steamcommunity.com OR site:reddit.com OR site:discord.com)`));
+            socialAdded = true;
+        }
+        if (data.name) {
+            catSocial.appendChild(createDorkCard('Exact Name Mentions on Socials', `"${data.name}" (site:linkedin.com OR site:instagram.com)`));
+            socialAdded = true;
         }
 
-        // --- MODULE: NETWORK & INFRASTRUCTURE ---
-        if(val.ip || val.domain) {
-            createSection("Network & Infrastructure Intelligence");
-            if(val.ip) {
-                addRes("IP Info & Geolocation", null, `https://ipinfo.io/${val.ip}`);
-                addRes("Shodan (IoT & Open Ports)", null, `https://www.shodan.io/host/${val.ip}`);
-                addRes("VirusTotal IP Analysis", null, `https://www.virustotal.com/gui/search/${val.ip}`);
-            }
-            if(val.domain) {
-                addRes("Whois Record", null, `https://who.is/whois/${val.domain}`);
-                addRes("Subdomain Finder (CRT.SH)", null, `https://crt.sh/?q=${val.domain}`);
-                addRes("Censys Asset Search", null, `https://search.censys.io/search?resource=hosts&q=${val.domain}`);
-            }
+        if (socialAdded) container.appendChild(catSocial);
+
+
+        // --- 3. INFRASTRUCTURE & DOMAIN ---
+        const catInfra = createCategory('INFRASTRUCTURE & DIRECTORIES');
+        let infraAdded = false;
+
+        if (data.domain) {
+            catInfra.appendChild(createDorkCard('Directory Traversal (Open Directories)', `intitle:"index of" "${data.domain}"`));
+            catInfra.appendChild(createDorkCard('Configuration Files Exposure', `site:${data.domain} ext:env OR ext:xml OR ext:json OR ext:yml`));
+            catInfra.appendChild(createDorkCard('Subdomain Indexing', `site:*.${data.domain} -www`));
+            infraAdded = true;
         }
 
-        // --- MODULE: FINANCIAL & ASSETS ---
-        if(val.plate || val.phone || val.name) {
-            createSection("Financial, Logistics & Assets");
-            if(val.plate) {
-                // Formatting plate for better searching (e.g. B1234XXX vs B 1234 XXX)
-                const cleanPlate = val.plate.replace(/\s+/g, '');
-                addRes("Vehicle Plate Indexing", `"${val.plate}" OR "${cleanPlate}" ext:pdf OR ext:xls`);
-            }
-            if(val.phone || val.name) {
-                addRes("Cek Rekening Kominfo (Fraud Check)", null, `https://cekrekening.id/home`);
-            }
+        if (infraAdded) container.appendChild(catInfra);
+
+
+        // --- 4. PHONE & IDENTIFICATION (INDONESIAN CONTEXT) ---
+        const catId = createCategory('COMMUNICATIONS & REGIONAL IDENTIFICATION');
+        let idAdded = false;
+
+        if (data.phone) {
+            let clean = data.phone.replace(/\D/g, '');
+            let v1 = clean;
+            let v2 = clean.startsWith('0') ? '62' + clean.substring(1) : clean;
+            let v3 = "+" + v2;
+            catId.appendChild(createDorkCard('Phone Number Variations Mentions', `"${v1}" OR "${v2}" OR "${v3}" -site:trucaller.com`));
+            idAdded = true;
         }
 
-        // --- MODULE: DARK WEB & BREACH ANALYTICS ---
-        if(val.email || val.user || val.phone) {
-            createSection("Breach & Leak Analytics");
-            addRes("Have I Been Pwned", null, `https://haveibeenpwned.com/`);
-            addRes("DeHashed (Deep Leak Search)", null, `https://dehashed.com/`);
-            if(val.email || val.user) {
-                const target = val.email || val.user;
-                addRes("Pastebin/Dump Dork", `"${target}" site:pastebin.com OR site:controlc.com OR site:throwbin.io`);
-            }
+        if (data.nik) {
+            catId.appendChild(createDorkCard('KPU / Dukcapil Deep Index', `intext:"${data.nik}" (site:kpu.go.id OR site:desa.id OR site:kab.go.id)`));
+            idAdded = true;
         }
 
-        window.scrollTo({top: document.querySelector('.dashboard').offsetHeight + 50, behavior: 'smooth'});
+        if (idAdded) container.appendChild(catId);
     }
+
+    // Trigger generate on enter key inside input fields
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                generateDorks();
+            }
+        });
+    });
 </script>
 
 </body>
