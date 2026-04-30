@@ -3,390 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celengan Milestone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Ultimate OSINT Web Framework</title>
     <style>
-        .progress-transition {
-            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --danger: #f85149;
+            --success: #3fb950;
         }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 5px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .result-card h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            color: var(--success);
+        }
+
+        .engine-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .engine-links a {
+            padding: 5px 12px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .engine-links a:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .direct-link {
+            background: #238636 !important;
+            color: white !important;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8em;
+            margin-top: 30px;
+            opacity: 0.5;
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen font-sans text-slate-700 pb-10">
+<body>
 
-    <div class="max-w-md mx-auto pt-8 px-4">
+<div class="container">
+    <header>
+        <h2>OSINT Multi-Engine</h2>
+        <p>Targeting & Dorking Tool</p>
+    </header>
+
+    <div class="input-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="fullName" placeholder="Contoh: Budi Santoso">
         
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
-            <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Total Tabungan</h2>
-            <div class="text-4xl font-bold text-slate-800 mb-8" id="totalAmount">Rp 0</div>
+        <label>Nomor HP</label>
+        <input type="text" id="phone" placeholder="Contoh: 0812...">
 
-            <div class="relative w-full h-5 bg-slate-100 rounded-full mb-2 overflow-hidden shadow-inner">
-                <div id="progressBar" class="absolute top-0 left-0 h-full bg-teal-400 progress-transition rounded-full" style="width: 0%;"></div>
-            </div>
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Contoh: budisantoso99">
 
-            <div class="relative w-full h-8 flex justify-between text-xs font-medium text-slate-400 mt-2" id="milestoneMarkers">
-                </div>
-            <p id="noMilestoneWarning" class="text-xs text-rose-400 mt-2 hidden text-center italic">Belum ada milestone yang diatur.</p>
-        </div>
+        <label>Lokasi / Kota</label>
+        <input type="text" id="location" placeholder="Contoh: Surabaya">
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
-            <h3 class="text-base font-semibold text-slate-700 mb-4">Catat Transaksi</h3>
-            
-            <div class="mb-4">
-                <label class="block text-xs font-medium text-slate-500 mb-1">Nominal (Dalam Ribuan)</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-sm">Rp</span>
-                    <input type="number" id="inputAmount" placeholder="Contoh: 15 (untuk Rp 15.000)" class="w-full pl-9 pr-12 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 text-sm">.000</span>
-                </div>
-            </div>
+        <label>NIK / Identitas</label>
+        <input type="text" id="nik" placeholder="Opsional">
 
-            <div class="mb-6">
-                <label class="block text-xs font-medium text-slate-500 mb-1">Keterangan</label>
-                <input type="text" id="inputNote" placeholder="Contoh: Sisa uang jajan..." class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
-            </div>
-
-            <div class="flex gap-3">
-                <button onclick="addTransaction('add')" class="flex-1 bg-emerald-400 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
-                    <span class="text-lg leading-none">+</span> Nabung
-                </button>
-                <button onclick="addTransaction('subtract')" class="flex-1 bg-rose-400 hover:bg-rose-500 text-white font-medium py-2.5 rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
-                    <span class="text-lg leading-none">-</span> Pakai
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-base font-semibold text-slate-700">Riwayat</h3>
-                <button onclick="clearHistory()" class="text-xs text-rose-500 hover:text-rose-600 font-medium bg-rose-50 px-2.5 py-1 rounded-lg transition">Reset Saldo</button>
-            </div>
-            
-            <div id="historyList" class="space-y-2.5 max-h-52 overflow-y-auto pr-1 no-scrollbar">
-                </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <h3 class="text-base font-semibold text-slate-700 mb-4 flex items-center gap-2">
-                <span>🎯</span> Atur Milestone
-            </h3>
-            
-            <div class="flex flex-col gap-2 mb-4">
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <input type="number" id="inputMilestone" placeholder="Nominal (Ribuan)" class="w-full pl-3 pr-8 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
-                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">k</span>
-                    </div>
-                    <input type="text" id="inputMilestoneNote" placeholder="Keterangan (Makan, dll)" class="flex-[1.5] px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none transition bg-slate-50 focus:bg-white">
-                </div>
-                <button onclick="addMilestone()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2 rounded-xl shadow-sm transition text-sm">
-                    Tambah Target Baru
-                </button>
-            </div>
-
-            <div id="milestoneList" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1 no-scrollbar">
-                </div>
-        </div>
+        <button onclick="generateOSINT()">GENERATE INVESTIGATION LINKS</button>
     </div>
 
-    <script>
-        // State Aplikasi
-        let currentAmount = 0;
-        let history = [];
-        // Struktur milestone sekarang menggunakan object untuk menyimpan nominal dan keterangan
-        let milestones = [
-            { amount: 12000, note: 'Awal' }, 
-            { amount: 50000, note: 'Menengah' }, 
-            { amount: 150000, note: 'Final' }
-        ];
+    <div id="results"></div>
 
-        // Format Rupiah
-        const formatRupiah = (number) => {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(number);
+    <footer>
+        OSINT Framework - Client Side Only (Privacy Friendly)
+    </footer>
+</div>
+
+<script>
+    function generateOSINT() {
+        const name = document.getElementById('fullName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const nik = document.getElementById('nik').value.trim().replace(/\D/g, '');
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // Reset hasil
+
+        const engines = {
+            "Google": "https://www.google.com/search?q=",
+            "Yandex": "https://yandex.com/search/?text=",
+            "Bing": "https://www.bing.com/search?q=",
+            "DuckDuckGo": "https://duckduckgo.com/?q="
         };
 
-        // Format Angka Pendek (Contoh: 15000 -> 15k)
-        const formatShort = (number) => {
-            if (number >= 1000000) return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-            if (number >= 1000) return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-            return number;
-        };
+        let dorks = [];
 
-        // Format Tanggal
-        const formatDate = (dateString) => {
-            const options = { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
-        };
-
-        // Render Marker & Chips Milestone
-        const renderMilestones = () => {
-            const markerContainer = document.getElementById('milestoneMarkers');
-            const listContainer = document.getElementById('milestoneList');
-            const warning = document.getElementById('noMilestoneWarning');
-            
-            markerContainer.innerHTML = '';
-            listContainer.innerHTML = '';
-
-            if (milestones.length === 0) {
-                warning.classList.remove('hidden');
-                return;
-            } else {
-                warning.classList.add('hidden');
-            }
-
-            const maxMilestone = milestones[milestones.length - 1].amount;
-
-            milestones.forEach((milestone, index) => {
-                // 1. Render Marker di Bawah Progress Bar
-                const percentage = (milestone.amount / maxMilestone) * 100;
-                const marker = document.createElement('div');
-                marker.className = 'absolute flex flex-col items-center transform -translate-x-1/2';
-                marker.style.left = `${percentage}%`;
-                
-                const dot = document.createElement('div');
-                dot.className = 'w-1 h-2 bg-slate-300 mb-1 rounded-sm';
-                
-                const text = document.createElement('span');
-                // Tampilkan tulisan pendek (misal: 30k) di bawah bar agar tidak kepanjangan
-                text.innerText = formatShort(milestone.amount);
-                text.className = 'bg-white border border-slate-100 px-1.5 py-0.5 rounded text-slate-500 text-[10px] sm:text-xs shadow-sm';
-
-                marker.appendChild(dot);
-                marker.appendChild(text);
-                markerContainer.appendChild(marker);
-
-                // 2. Render List di Panel Pengaturan (Pindah ke format baris/row agar lega)
-                const chip = document.createElement('div');
-                chip.className = 'flex items-center justify-between bg-teal-50/50 border border-teal-100/50 rounded-xl px-3 py-2';
-                chip.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="text-teal-700 font-semibold text-sm">${formatRupiah(milestone.amount)}</span>
-                        <span class="text-teal-600/70 text-xs">${milestone.note}</span>
-                    </div>
-                    <button onclick="removeMilestone(${index})" class="text-slate-300 hover:text-rose-400 hover:bg-rose-50 p-1.5 rounded-lg transition focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                `;
-                listContainer.appendChild(chip);
+        // 1. Pivot Nama
+        if (name) {
+            dorks.push({
+                title: "[NAMA] Pencarian Umum & Dokumen",
+                query: `"${name}" (ext:pdf OR ext:xlsx OR ext:doc)`
             });
-        };
+        }
 
-        // Tambah Milestone Baru
-        const addMilestone = () => {
-            const inputVal = document.getElementById('inputMilestone');
-            const inputNote = document.getElementById('inputMilestoneNote');
+        // 2. Pivot HP
+        if (phone) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
             
-            // Kalikan dengan 1000 karena user input dalam ribuan
-            const rawVal = parseInt(inputVal.value);
-            const val = rawVal * 1000; 
-            let note = inputNote.value.trim();
-
-            if (isNaN(val) || val <= 0) {
-                alert('Masukkan nominal target yang valid!');
-                return;
-            }
-
-            if (!note) note = 'Target Milestone';
-
-            // Cek apakah nominal sudah ada
-            const exists = milestones.find(m => m.amount === val);
-            if (exists) {
-                alert('Milestone dengan nominal tersebut sudah ada!');
-                return;
-            }
-
-            milestones.push({ amount: val, note: note });
-            // Urutkan dari terkecil ke terbesar berdasarkan amount
-            milestones.sort((a, b) => a.amount - b.amount);
-            
-            inputVal.value = '';
-            inputNote.value = '';
-            saveState();
-            updateUI();
-        };
-
-        // Hapus Milestone
-        const removeMilestone = (index) => {
-            milestones.splice(index, 1);
-            saveState();
-            updateUI();
-        };
-
-        // Update Tampilan Layar Utama
-        const updateUI = () => {
-            document.getElementById('totalAmount').innerText = formatRupiah(currentAmount);
-
-            renderMilestones();
-
-            // Kalkulasi Progress Bar
-            const progressBar = document.getElementById('progressBar');
-            const maxMilestone = milestones.length > 0 ? milestones[milestones.length - 1].amount : 0;
-            
-            let progressPercentage = 0;
-            if (maxMilestone > 0) {
-                progressPercentage = (currentAmount / maxMilestone) * 100;
-            } else if (currentAmount > 0) {
-                progressPercentage = 100;
-            }
-
-            if (progressPercentage > 100) progressPercentage = 100;
-            if (progressPercentage < 0) progressPercentage = 0;
-            
-            progressBar.style.width = `${progressPercentage}%`;
-
-            // Logika Warna Progress Bar (Ganti ke Emerald jika full)
-            if(maxMilestone > 0 && currentAmount >= maxMilestone) {
-                progressBar.classList.remove('bg-teal-400');
-                progressBar.classList.add('bg-emerald-400');
-            } else {
-                progressBar.classList.remove('bg-emerald-400');
-                progressBar.classList.add('bg-teal-400');
-            }
-
-            // Update List Riwayat
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-
-            if (history.length === 0) {
-                historyList.innerHTML = '<p class="text-slate-400 text-center text-sm italic py-4">Belum ada riwayat.</p>';
-            } else {
-                const sortedHistory = [...history].reverse();
-                sortedHistory.forEach(item => {
-                    const isAdd = item.type === 'add';
-                    const amountText = isAdd ? `+ ${formatRupiah(item.amount)}` : `- ${formatRupiah(item.amount)}`;
-                    const iconColor = isAdd ? 'text-emerald-500 bg-emerald-50' : 'text-rose-500 bg-rose-50';
-                    const textColor = isAdd ? 'text-emerald-600' : 'text-rose-500';
-                    const icon = isAdd ? '↑' : '↓';
-
-                    const div = document.createElement('div');
-                    div.className = 'flex justify-between items-center p-3 border border-slate-50 bg-slate-50/50 rounded-xl hover:bg-slate-100 transition';
-                    div.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${iconColor}">
-                                ${icon}
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-700 text-sm">${item.note}</p>
-                                <p class="text-[10px] text-slate-400">${formatDate(item.date)}</p>
-                            </div>
-                        </div>
-                        <div class="font-semibold text-sm ${textColor}">
-                            ${amountText}
-                        </div>
-                    `;
-                    historyList.appendChild(div);
-                });
-            }
-        };
-
-        // Simpan ke Local Storage
-        const saveState = () => {
-            const state = {
-                currentAmount,
-                history,
-                milestones
-            };
-            localStorage.setItem('celenganStateV3', JSON.stringify(state));
-        };
-
-        // Load dari Local Storage & Migrasi
-        const loadState = () => {
-            let savedState = localStorage.getItem('celenganStateV3');
-            
-            // Migrasi dari versi sebelumnya (V2 atau V1) jika ada
-            if (!savedState) {
-                let oldState = localStorage.getItem('celenganStateV2') || localStorage.getItem('celenganState');
-                if (oldState) {
-                    const parsedOld = JSON.parse(oldState);
-                    currentAmount = parsedOld.currentAmount || 0;
-                    history = parsedOld.history || [];
-                    
-                    // Format ulang array angka jadi object jika migrasi dari versi sebelumnya
-                    if(parsedOld.milestones && typeof parsedOld.milestones[0] === 'number') {
-                        milestones = parsedOld.milestones.map(m => ({ amount: m, note: 'Target' }));
-                    } else if (parsedOld.milestones) {
-                        milestones = parsedOld.milestones;
-                    }
-                    saveState(); // Simpan sebagai V3
-                }
-            } else {
-                const parsed = JSON.parse(savedState);
-                currentAmount = parsed.currentAmount || 0;
-                history = parsed.history || [];
-                if(parsed.milestones) milestones = parsed.milestones;
-            }
-            updateUI();
-        };
-
-        // Handle Transaksi Baru
-        const addTransaction = (type) => {
-            const inputAmount = document.getElementById('inputAmount');
-            const inputNote = document.getElementById('inputNote');
-
-            const rawVal = parseInt(inputAmount.value);
-            // Kalikan input dengan 1000 karena user diminta menginput dalam ribuan
-            const amount = rawVal * 1000; 
-            let note = inputNote.value.trim();
-
-            if (isNaN(amount) || amount <= 0) {
-                alert('Masukkan nominal yang valid!');
-                return;
-            }
-
-            if (!note) note = type === 'add' ? 'Nabung' : 'Pengeluaran';
-
-            if (type === 'subtract' && amount > currentAmount) {
-                if(!confirm('Pengeluaran lebih besar dari saldo tabungan. Lanjutkan?')) return;
-            }
-
-            if (type === 'add') {
-                currentAmount += amount;
-            } else {
-                currentAmount -= amount;
-                if(currentAmount < 0) currentAmount = 0;
-            }
-
-            history.push({
-                id: Date.now(),
-                type: type,
-                amount: amount,
-                note: note,
-                date: new Date().toISOString()
+            dorks.push({
+                title: "[HP] E-Commerce & Forum",
+                query: `"${phone}" OR "${cleanPhone}" site:tokopedia.com OR site:shopee.co.id OR site:kaskus.co.id`
+            });
+            dorks.push({
+                title: "[HP] Jejak Penipuan / Blacklist",
+                query: `"${phone}" OR "${cleanPhone}" (penipu OR blacklist OR lapor)`
             });
 
-            inputAmount.value = '';
-            inputNote.value = '';
+            // Direct Link WhatsApp & Telegram
+            const directCard = document.createElement('div');
+            directCard.className = 'result-card';
+            directCard.style.borderColor = '#3fb950';
+            directCard.innerHTML = `
+                <h3>[DIRECT] Social Chat</h3>
+                <div class="engine-links">
+                    <a href="https://wa.me/${cleanPhone}" target="_blank" class="direct-link">WhatsApp</a>
+                    <a href="https://t.me/+${cleanPhone}" target="_blank" class="direct-link">Telegram</a>
+                </div>
+            `;
+            resultsDiv.appendChild(directCard);
+        }
 
-            saveState();
-            updateUI();
-        };
+        // 3. Pivot Username
+        if (username) {
+            dorks.push({
+                title: "[USER] Profiling Sosmed",
+                query: `"${username}" site:facebook.com OR site:instagram.com OR site:x.com OR site:github.com`
+            });
+        }
 
-        // Reset Total
-        const clearHistory = () => {
-            if(confirm('Yakin ingin mereset saldo dan riwayat kembali ke Rp 0? (Milestone tidak akan terhapus)')) {
-                currentAmount = 0;
-                history = [];
-                saveState();
-                updateUI();
+        // 4. Pivot NIK & Lokasi
+        if (nik) {
+            dorks.push({ title: "[NIK] Exact Match", query: `"${nik}"` });
+        }
+        if (name && location) {
+            dorks.push({ title: "[CROSS] Nama + Lokasi", query: `"${name}" AND "${location}"` });
+        }
+
+        // Render Dorks ke UI
+        dorks.forEach(dork => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            
+            let linksHtml = `<div class="engine-links">`;
+            for (let [engine, url] of Object.entries(engines)) {
+                const fullUrl = url + encodeURIComponent(dork.query);
+                linksHtml += `<a href="${fullUrl}" target="_blank">${engine}</a>`;
             }
-        };
+            linksHtml += `</div>`;
 
-        // Inisialisasi
-        window.onload = loadState;
+            card.innerHTML = `
+                <h3>${dork.title}</h3>
+                <p style="font-size:0.8em; color:#8b949e; word-break:break-all;">Query: ${dork.query}</p>
+                ${linksHtml}
+            `;
+            resultsDiv.appendChild(card);
+        });
 
-    </script>
+        if (dorks.length === 0) {
+            resultsDiv.innerHTML = '<p style="text-align:center; color:var(--danger);">Isi setidaknya satu kotak untuk mencari!</p>';
+        }
+    }
+</script>
+
 </body>
 </html>
