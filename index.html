@@ -3,264 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate OSINT Web Framework</title>
+    <title>OSINT Pivot Framework v2</title>
     <style>
         :root {
-            --bg: #0d1117;
-            --card: #161b22;
-            --text: #c9d1d9;
-            --accent: #58a6ff;
-            --danger: #f85149;
-            --success: #3fb950;
+            --bg: #0d1117; --card: #161b22; --text: #c9d1d9;
+            --accent: #58a6ff; --danger: #f85149; --success: #3fb950; --warning: #d29922;
         }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; font-size: 14px; }
+        .container { width: 100%; max-width: 800px; margin: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        header { text-align: center; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #30363d; }
+        .input-group { background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; color: var(--accent); font-weight: bold; font-size: 0.8em; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .btn-clear { background: var(--danger); margin-top: 10px; }
+        
+        .section-title { margin-top: 20px; color: var(--warning); border-left: 4px solid var(--warning); padding-left: 10px; font-size: 1.1em; }
+        .result-card { background: var(--card); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #30363d; position: relative; }
+        .result-card h3 { margin: 0 0 8px 0; font-size: 1em; color: var(--success); }
+        .query-text { font-family: monospace; font-size: 0.75em; color: #8b949e; background: #0d1117; padding: 5px; border-radius: 3px; display: block; margin-bottom: 8px; word-break: break-all; }
+        
+        .engine-links { display: flex; flex-wrap: wrap; gap: 5px; }
+        .engine-links a { padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: var(--text); text-decoration: none; font-size: 0.8em; }
+        .engine-links a:hover { background: var(--accent); color: white; }
+        .copy-btn { position: absolute; right: 10px; top: 10px; font-size: 0.7em; padding: 2px 5px; background: #30363d; color: white; border-radius: 3px; cursor: pointer; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
-
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--accent);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-
-        .input-group {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-            color: var(--accent);
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 5px;
-            color: white;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        #results {
-            margin-top: 20px;
-        }
-
-        .result-card {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .result-card h3 {
-            margin-top: 0;
-            font-size: 1.1em;
-            color: var(--success);
-        }
-
-        .engine-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .engine-links a {
-            padding: 5px 12px;
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 4px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.85em;
-        }
-
-        .engine-links a:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .direct-link {
-            background: #238636 !important;
-            color: white !important;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.8em;
-            margin-top: 30px;
-            opacity: 0.5;
-        }
+        /* Notes Section */
+        #notes-area { background: #1c2128; border-color: var(--warning); height: 100px; font-size: 0.9em; }
+        
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h2>OSINT Multi-Engine</h2>
-        <p>Targeting & Dorking Tool</p>
+        <h2 style="margin:0">OSINT Pivot v2.0</h2>
+        <p style="margin:5px; font-size:0.8em; opacity:0.7">Connecting the Dots Framework</p>
     </header>
 
     <div class="input-group">
-        <label>Nama Lengkap</label>
-        <input type="text" id="fullName" placeholder="Contoh: Budi Santoso">
+        <div class="grid">
+            <div>
+                <label>NAMA LENGKAP</label>
+                <input type="text" id="fullName" placeholder="Target Name">
+            </div>
+            <div>
+                <label>USERNAME / ALIAS</label>
+                <input type="text" id="username" placeholder="Social handle">
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label>NOMOR HP</label>
+                <input type="text" id="phone" placeholder="0812...">
+            </div>
+            <div>
+                <label>KOTA / LOKASI</label>
+                <input type="text" id="location" placeholder="Surabaya">
+            </div>
+        </div>
+        <label>NIK / NO. IDENTITAS</label>
+        <input type="text" id="nik" placeholder="16 digit NIK">
         
-        <label>Nomor HP</label>
-        <input type="text" id="phone" placeholder="Contoh: 0812...">
+        <button onclick="generateOSINT()">START INVESTIGATION</button>
+        <button class="btn-clear" onclick="clearInputs()">RESET DATA</button>
+    </div>
 
-        <label>Username</label>
-        <input type="text" id="username" placeholder="Contoh: budisantoso99">
-
-        <label>Lokasi / Kota</label>
-        <input type="text" id="location" placeholder="Contoh: Surabaya">
-
-        <label>NIK / Identitas</label>
-        <input type="text" id="nik" placeholder="Opsional">
-
-        <button onclick="generateOSINT()">GENERATE INVESTIGATION LINKS</button>
+    <div class="input-group" style="border-color: var(--warning);">
+        <label style="color: var(--warning);">INVESTIGATION LOG (Notes)</label>
+        <textarea id="notes-area" placeholder="Tulis temuanmu di sini... (Tersimpan otomatis di browser)"></textarea>
     </div>
 
     <div id="results"></div>
-
-    <footer>
-        OSINT Framework - Client Side Only (Privacy Friendly)
-    </footer>
 </div>
 
 <script>
+    // Load notes from local storage
+    document.getElementById('notes-area').value = localStorage.getItem('osint_notes') || '';
+    document.getElementById('notes-area').addEventListener('input', (e) => {
+        localStorage.setItem('osint_notes', e.target.value);
+    });
+
+    function clearInputs() {
+        if(confirm("Hapus semua data input?")) {
+            document.querySelectorAll('input').forEach(i => i.value = '');
+            document.getElementById('results').innerHTML = '';
+        }
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text);
+        alert("Query copied!");
+    }
+
+    function createCard(title, query, engines = true) {
+        const div = document.createElement('div');
+        div.className = 'result-card';
+        
+        let engineHtml = '';
+        if(engines) {
+            const urls = {
+                "Google": "https://www.google.com/search?q=",
+                "Yandex": "https://yandex.com/search/?text=",
+                "DuckDuck": "https://duckduckgo.com/?q=",
+                "Bing": "https://www.bing.com/search?q="
+            };
+            engineHtml = '<div class="engine-links">';
+            for(let [name, base] of Object.entries(urls)) {
+                engineHtml += `<a href="${base + encodeURIComponent(query)}" target="_blank">${name}</a>`;
+            }
+            engineHtml += '</div>';
+        }
+
+        div.innerHTML = `
+            <span class="copy-btn" onclick="copyToClipboard('${query.replace(/'/g, "\\'")}')">COPY</span>
+            <h3>${title}</h3>
+            <span class="query-text">${query}</span>
+            ${engineHtml}
+        `;
+        return div;
+    }
+
     function generateOSINT() {
-        const name = document.getElementById('fullName').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const username = document.getElementById('username').value.trim();
-        const location = document.getElementById('location').value.trim();
-        const nik = document.getElementById('nik').value.trim().replace(/\D/g, '');
-
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Reset hasil
-
-        const engines = {
-            "Google": "https://www.google.com/search?q=",
-            "Yandex": "https://yandex.com/search/?text=",
-            "Bing": "https://www.bing.com/search?q=",
-            "DuckDuckGo": "https://duckduckgo.com/?q="
+        const val = {
+            name: document.getElementById('fullName').value.trim(),
+            user: document.getElementById('username').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            loc: document.getElementById('location').value.trim(),
+            nik: document.getElementById('nik').value.trim()
         };
 
-        let dorks = [];
+        const res = document.getElementById('results');
+        res.innerHTML = '';
 
-        // 1. Pivot Nama
-        if (name) {
-            dorks.push({
-                title: "[NAMA] Pencarian Umum & Dokumen",
-                query: `"${name}" (ext:pdf OR ext:xlsx OR ext:doc)`
-            });
+        if (!val.name && !val.user && !val.phone) {
+            alert("Isi data minimal Nama, Username, atau HP!");
+            return;
         }
 
-        // 2. Pivot HP
-        if (phone) {
-            let cleanPhone = phone.replace(/\D/g, '');
-            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
-            
-            dorks.push({
-                title: "[HP] E-Commerce & Forum",
-                query: `"${phone}" OR "${cleanPhone}" site:tokopedia.com OR site:shopee.co.id OR site:kaskus.co.id`
-            });
-            dorks.push({
-                title: "[HP] Jejak Penipuan / Blacklist",
-                query: `"${phone}" OR "${cleanPhone}" (penipu OR blacklist OR lapor)`
-            });
+        // --- SECTION 1: DIRECT SOCIAL PIVOT ---
+        const sec1 = document.createElement('div');
+        sec1.innerHTML = '<div class="section-title">SOCIAL MEDIA PIVOT</div>';
+        res.appendChild(sec1);
 
-            // Direct Link WhatsApp & Telegram
-            const directCard = document.createElement('div');
-            directCard.className = 'result-card';
-            directCard.style.borderColor = '#3fb950';
-            directCard.innerHTML = `
-                <h3>[DIRECT] Social Chat</h3>
-                <div class="engine-links">
-                    <a href="https://wa.me/${cleanPhone}" target="_blank" class="direct-link">WhatsApp</a>
-                    <a href="https://t.me/+${cleanPhone}" target="_blank" class="direct-link">Telegram</a>
-                </div>
-            `;
-            resultsDiv.appendChild(directCard);
-        }
-
-        // 3. Pivot Username
-        if (username) {
-            dorks.push({
-                title: "[USER] Profiling Sosmed",
-                query: `"${username}" site:facebook.com OR site:instagram.com OR site:x.com OR site:github.com`
-            });
-        }
-
-        // 4. Pivot NIK & Lokasi
-        if (nik) {
-            dorks.push({ title: "[NIK] Exact Match", query: `"${nik}"` });
-        }
-        if (name && location) {
-            dorks.push({ title: "[CROSS] Nama + Lokasi", query: `"${name}" AND "${location}"` });
-        }
-
-        // Render Dorks ke UI
-        dorks.forEach(dork => {
+        if (val.user) {
             const card = document.createElement('div');
             card.className = 'result-card';
-            
-            let linksHtml = `<div class="engine-links">`;
-            for (let [engine, url] of Object.entries(engines)) {
-                const fullUrl = url + encodeURIComponent(dork.query);
-                linksHtml += `<a href="${fullUrl}" target="_blank">${engine}</a>`;
-            }
-            linksHtml += `</div>`;
-
-            card.innerHTML = `
-                <h3>${dork.title}</h3>
-                <p style="font-size:0.8em; color:#8b949e; word-break:break-all;">Query: ${dork.query}</p>
-                ${linksHtml}
-            `;
-            resultsDiv.appendChild(card);
-        });
-
-        if (dorks.length === 0) {
-            resultsDiv.innerHTML = '<p style="text-align:center; color:var(--danger);">Isi setidaknya satu kotak untuk mencari!</p>';
+            card.innerHTML = `<h3>Direct Profile Check (${val.user})</h3>
+                <div class="engine-links">
+                    <a href="https://www.instagram.com/${val.user}" target="_blank">Instagram</a>
+                    <a href="https://twitter.com/${val.user}" target="_blank">X/Twitter</a>
+                    <a href="https://github.com/${val.user}" target="_blank">GitHub</a>
+                    <a href="https://www.facebook.com/public/${val.user}" target="_blank">FB Search</a>
+                </div>`;
+            res.appendChild(card);
         }
+
+        // --- SECTION 2: CONNECTING THE DOTS (CROSS-REF) ---
+        const sec2 = document.createElement('div');
+        sec2.innerHTML = '<div class="section-title">CONNECTING THE DOTS (CROSS-REF)</div>';
+        res.appendChild(sec2);
+
+        // Dot 1: Nama + Lokasi (Mencari domisili spesifik)
+        if (val.name && val.loc) {
+            res.appendChild(createCard("Nama + Lokasi (Domisili)", `"${val.name}" AND "${val.loc}"`));
+        }
+
+        // Dot 2: Nama + Username (Mencari keterkaitan identitas asli & alias)
+        if (val.name && val.user) {
+            res.appendChild(createCard("Nama + Alias (Identity Link)", `"${val.name}" AND "${val.user}"`));
+        }
+
+        // Dot 3: HP + Username (Mencari postingan jualan/forum)
+        if (val.phone && val.user) {
+            res.appendChild(createCard("Phone + Alias (Forum/Market)", `"${val.phone}" AND "${val.user}"`));
+        }
+
+        // --- SECTION 3: DEEP DORKING (LEAKS & DOCS) ---
+        const sec3 = document.createElement('div');
+        sec3.innerHTML = '<div class="section-title">DEEP DORKING & LEAKS</div>';
+        res.appendChild(sec3);
+
+        if (val.name) {
+            res.appendChild(createCard("Potensi Dokumen Bocor", `"${val.name}" ext:pdf OR ext:xlsx OR ext:csv OR ext:docx`));
+            res.appendChild(createCard("Directori Pemerintah/Pendidikan", `site:go.id OR site:ac.id "${val.name}"`));
+        }
+
+        if (val.phone) {
+            let cleanPhone = val.phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
+            
+            res.appendChild(createCard("Jejak Kontak WhatsApp", `site:wa.me "${val.phone}" OR "${cleanPhone}"`));
+            res.appendChild(createCard("GetContact / TrueCaller Web Hint", `"${val.phone}" (tags OR "name is" OR "dilihat sebagai")`));
+        }
+
+        if (val.nik) {
+            res.appendChild(createCard("Cek NIK di Database Publik", `"${val.nik}"` || `site:kpu.go.id OR site:pddikti.kemdikbud.go.id "${val.nik}"`));
+        }
+
+        // Scroll to results
+        res.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 
