@@ -2,88 +2,298 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GBA Web Player - Simple Version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OSINT INTELLIGENCE SUITE v6.0 - ENTERPRISE</title>
     <style>
-        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; margin: 0; }
-        #emulator-wrapper { width: 100%; max-width: 800px; height: 500px; margin: 20px auto; background: #000; border: 2px solid #444; }
-        .controls { background: #252525; padding: 15px; margin: 10px; border-radius: 8px; display: inline-block; }
-        button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; background: #27ae60; color: white; font-weight: bold; }
-        button.download { background: #2980b9; }
-        button.upload { background: #8e44ad; }
-        input[type="file"] { display: none; }
-        .label-btn { padding: 10px 15px; background: #e67e22; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        :root {
+            --bg: #050505; --card: #0d0d0d; --accent: #00ff88; --accent-hover: #00cc6a;
+            --text: #e0e0e0; --dim: #888888; --success: #28a745; --danger: #dc3545;
+            --border: #1f1f1f;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Consolas', 'Courier New', monospace; 
+            margin: 0; padding: 20px; line-height: 1.5;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Header */
+        .header { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .header h1 { font-size: 1.5rem; margin: 0; letter-spacing: 2px; color: var(--accent); }
+        .header p { font-size: 0.75rem; margin: 5px 0 0; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+        .status-badge { font-size: 0.7rem; background: rgba(0, 255, 136, 0.1); color: var(--accent); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--accent); }
+
+        /* Input Section */
+        .dashboard { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        label { display: block; font-size: 0.7rem; color: var(--dim); text-transform: uppercase; margin-bottom: 6px; font-weight: bold; letter-spacing: 1px; }
+        input {
+            width: 100%; background: #000; border: 1px solid #333; padding: 12px; 
+            color: var(--accent); border-radius: 4px; outline: none; font-size: 0.9rem; font-family: inherit;
+            transition: border 0.3s ease;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
+        input::placeholder { color: #333; }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button {
+            padding: 12px 20px; border-radius: 4px; border: none; font-weight: bold;
+            cursor: pointer; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: all 0.3s ease; flex: 1; font-family: inherit;
+        }
+        .btn-main { background: var(--accent); color: #000; }
+        .btn-main:hover { background: var(--accent-hover); }
+        .btn-secondary { background: #1a1a1a; color: var(--dim); border: 1px solid #333; }
+        .btn-secondary:hover { background: #222; color: #fff; }
+
+        /* Results Display */
+        #output { margin-top: 30px; }
+        .section-tag {
+            font-size: 0.8rem; color: var(--accent); font-weight: bold;
+            margin: 30px 0 15px; border-bottom: 1px dashed var(--border); padding-bottom: 5px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .res-card {
+            background: var(--card); border: 1px solid var(--border); padding: 15px;
+            border-radius: 6px; transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .res-card:hover { border-color: #333; transform: translateY(-2px); }
+        .res-card h3 { font-size: 0.85rem; margin: 0 0 8px; color: #fff; text-transform: uppercase; }
+        .res-card p { 
+            font-size: 0.75rem; color: var(--dim); margin-bottom: 15px; 
+            background: #000; padding: 8px; border-radius: 4px; border: 1px solid #111;
+            word-break: break-all;
+        }
+        
+        .engine-flex { display: flex; gap: 8px; flex-wrap: wrap; }
+        .engine-flex a {
+            flex: 1; min-width: 70px; text-align: center; background: #0a0a0a;
+            padding: 8px; border-radius: 4px; color: var(--text); text-decoration: none;
+            font-size: 0.75rem; border: 1px solid #222; transition: all 0.2s ease;
+        }
+        .engine-flex a:hover { background: #1a1a1a; border-color: var(--dim); }
+        .special-link { background: rgba(0, 255, 136, 0.05) !important; color: var(--accent) !important; border-color: rgba(0, 255, 136, 0.3) !important; font-weight: bold; }
+        .special-link:hover { background: rgba(0, 255, 136, 0.15) !important; }
+
+        @media (max-width: 600px) {
+            .btn-group { flex-direction: column; }
+            .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>GBA Player (Tanpa Ribet)</h1>
-
-    <div class="controls">
-        <label class="label-btn"> Pilih File .GBA
-            <input type="file" id="rom-file" accept=".gba">
-        </label>
-        
-        <button class="download" onclick="downloadSave()">⬇️ Download Save (.sav)</button>
-        <label class="label-btn" style="background:#8e44ad"> ⬆️ Upload Save
-            <input type="file" id="upload-save" accept=".sav">
-        </label>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>INTEL SUITE v6.0</h1>
+            <p>Advanced Enterprise Reconnaissance & Data Correlation</p>
+        </div>
+        <div class="status-badge">SYSTEM: ONLINE</div>
     </div>
 
-    <div id="emulator-wrapper">
-        <div id="game"></div>
+    <div class="dashboard">
+        <div class="grid-inputs">
+            <div>
+                <label>Target Name</label>
+                <input type="text" id="name" placeholder="John Doe">
+            </div>
+            <div>
+                <label>Username / Alias</label>
+                <input type="text" id="user" placeholder="johndoe99">
+            </div>
+            <div>
+                <label>Email Address</label>
+                <input type="text" id="email" placeholder="target@email.com">
+            </div>
+            <div>
+                <label>Phone Number</label>
+                <input type="text" id="phone" placeholder="0812... / 62812...">
+            </div>
+            <div>
+                <label>NIK / National ID</label>
+                <input type="text" id="nik" placeholder="16 Digit Number">
+            </div>
+            <div>
+                <label>Vehicle Plate</label>
+                <input type="text" id="plate" placeholder="B 1234 XXX">
+            </div>
+            <div>
+                <label>IP Address</label>
+                <input type="text" id="ip" placeholder="8.8.8.8">
+            </div>
+            <div>
+                <label>Domain / Company</label>
+                <input type="text" id="domain" placeholder="example.com">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-main" onclick="executeIntelligence()">Execute Global Recon</button>
+            <button class="btn-secondary" onclick="clearData()">Purge Cache & Reset</button>
+        </div>
     </div>
 
-    <p style="color: #888; font-size: 0.8em;">Data otomatis tersimpan di browser ini (Auto-save).</p>
+    <div id="output"></div>
+</div>
 
-    <script>
-        let EJS_player;
+<script>
+    function clearData() {
+        document.querySelectorAll('input').forEach(input => input.value = '');
+        document.getElementById('output').innerHTML = '';
+    }
 
-        document.getElementById('rom-file').onchange = function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+    // Helper to format phone numbers for better dorking
+    function getPhoneVariations(phone) {
+        let clean = phone.replace(/\D/g, '');
+        if (!clean) return "";
+        let var1 = clean;
+        let var2 = clean.startsWith('0') ? '62' + clean.substring(1) : clean;
+        let var3 = clean.startsWith('62') ? '0' + clean.substring(2) : clean;
+        let var4 = "+" + var2;
+        return `"${var1}" OR "${var2}" OR "${var3}" OR "${var4}"`;
+    }
 
-            window.EJS_player = "#game";
-            window.EJS_core = "gba"; 
-            window.EJS_gameUrl = URL.createObjectURL(file);
-            window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-            window.EJS_startOnLoaded = true;
-
-            // Memuat loader emulator
-            let script = document.createElement("script");
-            script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-            document.head.appendChild(script);
+    function executeIntelligence() {
+        const val = {
+            name: document.getElementById('name').value.trim(),
+            user: document.getElementById('user').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            nik: document.getElementById('nik').value.trim(),
+            plate: document.getElementById('plate').value.trim(),
+            ip: document.getElementById('ip').value.trim(),
+            domain: document.getElementById('domain').value.trim()
         };
 
-        // Fungsi Download Save Data (.sav)
-        function downloadSave() {
-            if (!window.EJS_emulator) return alert("Jalankan game dulu!");
-            
-            // EmulatorJS menyimpan file secara virtual dengan nama 'game.sav'
-            const data = window.EJS_emulator.getFile("game.sav");
-            if (!data) return alert("Belum ada save data!");
+        const out = document.getElementById('output');
+        out.innerHTML = "";
 
-            const blob = new Blob([data], { type: "application/octet-stream" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "savegame.sav";
-            a.click();
+        let currentGrid = null;
+
+        const createSection = (title) => {
+            const t = document.createElement('div');
+            t.className = 'section-tag';
+            t.innerText = `[+] ${title}`;
+            out.appendChild(t);
+            
+            currentGrid = document.createElement('div');
+            currentGrid.className = 'res-grid';
+            out.appendChild(currentGrid);
+        };
+
+        const addRes = (title, query, specialUrl = null) => {
+            const card = document.createElement('div');
+            card.className = 'res-card';
+            let engines = '';
+            
+            if(specialUrl) {
+                engines = `<a href="${specialUrl}" target="_blank" class="special-link">LAUNCH EXTERNAL PORTAL</a>`;
+            } else {
+                const urls = { 
+                    "Google": "https://google.com/search?q=", 
+                    "Yandex": "https://yandex.com/search/?text=", 
+                    "Bing": "https://www.bing.com/search?q=" 
+                };
+                for(let [n, b] of Object.entries(urls)) {
+                    engines += `<a href="${b + encodeURIComponent(query)}" target="_blank">${n}</a>`;
+                }
+            }
+
+            card.innerHTML = `<h3>${title}</h3><p>${query || specialUrl}</p><div class="engine-flex">${engines}</div>`;
+            currentGrid.appendChild(card);
+        };
+
+        let hasData = Object.values(val).some(v => v !== "");
+        if (!hasData) {
+            out.innerHTML = `<div style="color: var(--danger); margin-top: 20px; text-align: center; font-size: 0.9rem;">[ERROR] NO TARGET DATA PROVIDED.</div>`;
+            return;
         }
 
-        // Fungsi Upload Save Data (.sav)
-        document.getElementById('upload-save').onchange = function(e) {
-            if (!window.EJS_emulator) return alert("Jalankan game dulu baru upload save!");
-            const file = e.target.files[0];
-            const reader = new FileReader();
+        // --- MODULE: IDENTITY & CIVIL RECORDS ---
+        if(val.nik || val.name) {
+            createSection("Identity & Civil Records (Dukcapil/KPU)");
+            if(val.nik) {
+                addRes("Dukcapil/KPU Deep Search", `intext:"${val.nik}" site:go.id OR site:desa.id`);
+                addRes("Exposed NIK Files (PDF/XLS/CSV)", `"${val.nik}" ext:pdf OR ext:xls OR ext:xlsx OR ext:csv`);
+            }
+            if(val.name && val.nik) {
+                addRes("Name & NIK Correlation", `"${val.name}" AND "${val.nik}"`);
+            } else if (val.name) {
+                addRes("General Name Mentions (Gov)", `"${val.name}" site:go.id ext:pdf`);
+                addRes("Academic Records (PDDikti)", `site:pddikti.kemdikbud.go.id "${val.name}"`);
+            }
+        }
+
+        // --- MODULE: DIGITAL FOOTPRINT & COMMS ---
+        if(val.user || val.email || val.phone) {
+            createSection("Digital Footprint & Communications");
             
-            reader.onload = function(event) {
-                const saveData = new Uint8Array(event.target.result);
-                window.EJS_emulator.setFile("game.sav", saveData);
-                alert("Save data berhasil di-upload! Silakan restart game atau load di dalam menu game.");
-            };
-            reader.readAsArrayBuffer(file);
-        };
-    </script>
+            if(val.email) {
+                addRes("Email Exact Match Search", `intext:"${val.email}" OR "${val.email}"`);
+                addRes("Epios (Email OSINT Portal)", null, `https://epios.com/`);
+                addRes("Hunter.io (Domain/Email)", null, `https://hunter.io/search/${val.email.split('@')[1] || val.email}`);
+            }
+            
+            if(val.user) {
+                addRes("Social Media Indexing", `"${val.user}" site:instagram.com OR site:twitter.com OR site:tiktok.com OR site:linkedin.com`);
+                addRes("Instant Username Search", null, `https://instantusername.com/?q=${val.user}`);
+                addRes("Source Code / Repo Leaks", `"${val.user}" site:github.com OR site:gitlab.com OR site:pastebin.com`);
+            }
+
+            if(val.phone) {
+                const phoneDork = getPhoneVariations(val.phone);
+                addRes("Phone Number Variations Dork", phoneDork);
+                addRes("Truecaller Web Tracker", null, `https://www.truecaller.com/search/id/${val.phone}`);
+                addRes("Sync.Me Reverse Lookup", null, `https://sync.me/search/?number=${val.phone}`);
+                addRes("GetContact Web (Requires Login)", null, `https://web.getcontact.com/`);
+            }
+        }
+
+        // --- MODULE: NETWORK & INFRASTRUCTURE ---
+        if(val.ip || val.domain) {
+            createSection("Network & Infrastructure Intelligence");
+            if(val.ip) {
+                addRes("IP Info & Geolocation", null, `https://ipinfo.io/${val.ip}`);
+                addRes("Shodan (IoT & Open Ports)", null, `https://www.shodan.io/host/${val.ip}`);
+                addRes("VirusTotal IP Analysis", null, `https://www.virustotal.com/gui/search/${val.ip}`);
+            }
+            if(val.domain) {
+                addRes("Whois Record", null, `https://who.is/whois/${val.domain}`);
+                addRes("Subdomain Finder (CRT.SH)", null, `https://crt.sh/?q=${val.domain}`);
+                addRes("Censys Asset Search", null, `https://search.censys.io/search?resource=hosts&q=${val.domain}`);
+            }
+        }
+
+        // --- MODULE: FINANCIAL & ASSETS ---
+        if(val.plate || val.phone || val.name) {
+            createSection("Financial, Logistics & Assets");
+            if(val.plate) {
+                // Formatting plate for better searching (e.g. B1234XXX vs B 1234 XXX)
+                const cleanPlate = val.plate.replace(/\s+/g, '');
+                addRes("Vehicle Plate Indexing", `"${val.plate}" OR "${cleanPlate}" ext:pdf OR ext:xls`);
+            }
+            if(val.phone || val.name) {
+                addRes("Cek Rekening Kominfo (Fraud Check)", null, `https://cekrekening.id/home`);
+            }
+        }
+
+        // --- MODULE: DARK WEB & BREACH ANALYTICS ---
+        if(val.email || val.user || val.phone) {
+            createSection("Breach & Leak Analytics");
+            addRes("Have I Been Pwned", null, `https://haveibeenpwned.com/`);
+            addRes("DeHashed (Deep Leak Search)", null, `https://dehashed.com/`);
+            if(val.email || val.user) {
+                const target = val.email || val.user;
+                addRes("Pastebin/Dump Dork", `"${target}" site:pastebin.com OR site:controlc.com OR site:throwbin.io`);
+            }
+        }
+
+        window.scrollTo({top: document.querySelector('.dashboard').offsetHeight + 50, behavior: 'smooth'});
+    }
+</script>
+
 </body>
 </html>
