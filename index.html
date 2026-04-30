@@ -2,245 +2,260 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT Command Center v3.0 | Pro Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OSINT PRO | G-A07 Edition</title>
     <style>
         :root {
-            --bg-deep: #0b0e14; --bg-panel: #151921; --accent: #00ff41; /* Matrix Green */
-            --text-main: #e0e0e0; --text-dim: #888; --danger: #ff4444; --warning: #ffbb33;
+            --black: #000000;
+            --dark-grey: #111111;
+            --border: #222222;
+            --accent: #3498db; /* Professional Blue */
+            --text: #ffffff;
+            --dim-text: #888888;
+            --success: #2ecc71;
         }
-        body { font-family: 'Fira Code', monospace, sans-serif; background: var(--bg-deep); color: var(--text-main); margin: 0; font-size: 13px; line-height: 1.5; }
-        .container { display: flex; flex-direction: column; height: 100vh; max-width: 1200px; margin: auto; }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Sidebar & Layout */
-        header { padding: 15px; border-bottom: 1px solid var(--accent); background: var(--bg-panel); display: flex; justify-content: space-between; align-items: center; }
-        .main-layout { display: flex; flex: 1; overflow: hidden; }
-        .input-sidebar { width: 320px; background: var(--bg-panel); padding: 20px; border-right: 1px solid #222; overflow-y: auto; }
-        .content-area { flex: 1; padding: 20px; overflow-y: auto; background: #0d1117; }
+        body {
+            background-color: var(--black);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Container & Header */
+        .app-container { padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
+        
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.5px; font-weight: 700; }
+        header span { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
         /* Input Styling */
-        .field-group { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: var(--accent); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        input { width: 100%; background: #0b0e14; border: 1px solid #333; padding: 8px; color: var(--accent); border-radius: 3px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(0,255,65,0.3); }
-
-        /* Buttons */
-        .btn { cursor: pointer; padding: 10px; border: none; border-radius: 3px; font-weight: bold; text-transform: uppercase; transition: 0.2s; width: 100%; margin-top: 10px; }
-        .btn-pro { background: var(--accent); color: #000; }
-        .btn-pro:hover { background: #00cc33; box-shadow: 0 0 15px rgba(0,255,65,0.5); }
-        .btn-reset { background: #222; color: #888; font-size: 10px; }
-
-        /* Results Display */
-        .module-sec { margin-bottom: 25px; }
-        .module-header { background: #1c2128; padding: 8px 12px; border-left: 3px solid var(--accent); font-weight: bold; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .card { background: var(--bg-panel); border: 1px solid #222; border-radius: 4px; padding: 12px; margin-bottom: 8px; position: relative; }
-        .card:hover { border-color: #444; }
-        .card h4 { margin: 0 0 5px 0; color: var(--warning); font-size: 12px; }
-        .query-box { font-size: 11px; color: #aaa; background: #0b0e14; padding: 5px; border-radius: 3px; display: block; margin: 5px 0; border: 1px dashed #444; overflow-x: auto; }
-        
-        .links-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-        .links-grid a { padding: 4px 8px; background: #222; border: 1px solid #333; color: var(--text-main); text-decoration: none; font-size: 10px; border-radius: 2px; }
-        .links-grid a:hover { background: var(--accent); color: #000; }
-        
-        .copy-tag { position: absolute; right: 10px; top: 10px; font-size: 9px; background: #333; padding: 2px 5px; cursor: pointer; border-radius: 2px; }
-
-        /* Terminal Style Footer */
-        footer { background: #000; padding: 5px 15px; font-size: 10px; color: var(--accent); border-top: 1px solid #222; }
-
-        @media (max-width: 768px) {
-            .main-layout { flex-direction: column; }
-            .input-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #222; }
+        .input-card {
+            background: var(--dark-grey);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
+
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 0.7rem; color: var(--dim-text); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+        
+        input {
+            width: 100%;
+            background: #080808;
+            border: 1px solid var(--border);
+            padding: 12px;
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-reset {
+            width: 100%;
+            background: transparent;
+            color: var(--dim-text);
+            border: none;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* Result Modules */
+        .module-title {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin: 30px 0 15px 0;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 5px;
+        }
+
+        .result-item {
+            background: var(--dark-grey);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #1a1a1a;
+        }
+
+        .result-item h4 { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; color: #eee; }
+        
+        .query-preview {
+            font-family: 'Monaco', monospace;
+            font-size: 0.7rem;
+            color: var(--dim-text);
+            background: #000;
+            padding: 8px;
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+
+        .engine-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .engine-bar a {
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+            padding: 8px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .engine-bar a:active { background: var(--accent); }
+
+        /* Floating Notes */
+        #notes-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
     <header>
-        <div style="font-weight: bold; letter-spacing: 2px;">[ ADVANCED OSINT COMMAND CENTER ]</div>
-        <div id="status" style="font-size: 10px; color: var(--accent);">SYSTEM: READY</div>
+        <span>Intelligence Framework</span>
+        <h1>OSINT COMMAND</h1>
     </header>
 
-    <div class="main-layout">
-        <div class="input-sidebar">
-            <div class="field-group">
-                <label>Target Full Name</label>
-                <input type="text" id="name" placeholder="e.g. Varhan Ardiansyah">
-            </div>
-            <div class="field-group">
-                <label>Primary Username</label>
-                <input type="text" id="user" placeholder="e.g. varhan_01">
-            </div>
-            <div class="field-group">
-                <label>Phone Number (Raw)</label>
-                <input type="text" id="phone" placeholder="0812xxx">
-            </div>
-            <div class="field-group">
-                <label>Email Address</label>
-                <input type="text" id="email" placeholder="target@email.com">
-            </div>
-            <div class="field-group">
-                <label>Location / Org</label>
-                <input type="text" id="loc" placeholder="City or School/Company">
-            </div>
-            <div class="field-group">
-                <label>NIK (Indonesian ID)</label>
-                <input type="text" id="nik" placeholder="16 Digit">
-            </div>
-            
-            <button class="btn btn-pro" onclick="executeScan()">Execute Full Scan</button>
-            <button class="btn btn-reset" onclick="resetForm()">Clear Terminal</button>
-
-            <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 10px;">
-                <label>Notes & Findings</label>
-                <textarea id="notes" style="width: 100%; height: 100px; background: #000; color: #00ff41; border: 1px solid #333; font-size: 11px; padding: 5px;" placeholder="Capture dots here..."></textarea>
-            </div>
+    <div class="input-card">
+        <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="targetName" placeholder="Nama Lengkap">
         </div>
-
-        <div class="content-area" id="workspace">
-            <div style="text-align: center; margin-top: 100px; opacity: 0.3;">
-                <h1>AWAITING TARGET INPUT</h1>
-                <p>Enter data in the sidebar to begin reconnaissance.</p>
-            </div>
+        <div class="field">
+            <label>Username / Alias</label>
+            <input type="text" id="targetUser" placeholder="Handle Sosmed">
         </div>
+        <div class="field">
+            <label>Phone Number</label>
+            <input type="text" id="targetPhone" placeholder="0812xxxx">
+        </div>
+        <div class="field">
+            <label>Identity (NIK/Email)</label>
+            <input type="text" id="targetExtra" placeholder="NIK atau Email">
+        </div>
+        
+        <button class="btn-primary" onclick="runInvestigation()">Start Reconnaissance</button>
+        <button class="btn-reset" onclick="window.location.reload()">Clear Session</button>
     </div>
 
-    <footer>
-        LOG: <span id="log-msg">Standby...</span>
-    </footer>
+    <div id="output"></div>
 </div>
 
 <script>
-    // System Initialization
-    const log = (msg) => { document.getElementById('log-msg').innerText = msg; };
-    const notesBox = document.getElementById('notes');
-    notesBox.value = localStorage.getItem('osint_pro_notes') || '';
-    notesBox.oninput = () => localStorage.setItem('osint_pro_notes', notesBox.value);
+    function runInvestigation() {
+        const name = document.getElementById('targetName').value.trim();
+        const user = document.getElementById('targetUser').value.trim();
+        const phone = document.getElementById('targetPhone').value.trim();
+        const extra = document.getElementById('targetExtra').value.trim();
+        const output = document.getElementById('output');
+        
+        if (!name && !user && !phone && !extra) return alert("Data minimal diperlukan.");
+        
+        output.innerHTML = ""; // Reset
+        
+        const engines = { "Google": "https://google.com/search?q=", "Yandex": "https://yandex.com/search/?text=", "Duck": "https://duckduckgo.com/?q=" };
 
-    function resetForm() {
-        if(confirm("Wipe all current session data?")) {
-            document.querySelectorAll('input').forEach(i => i.value = '');
-            document.getElementById('workspace').innerHTML = '';
-            log("System Cleaned.");
-        }
-    }
-
-    function copyVal(text) {
-        navigator.clipboard.writeText(text);
-        log("Query Copied to Clipboard.");
-    }
-
-    function createModule(title) {
-        const sec = document.createElement('div');
-        sec.className = 'module-sec';
-        sec.innerHTML = `<div class="module-header"><span>${title}</span></div>`;
-        return sec;
-    }
-
-    function createCard(title, dork) {
-        const card = document.createElement('div');
-        card.className = 'card';
-        const engines = {
-            "G": "https://www.google.com/search?q=",
-            "Y": "https://yandex.com/search/?text=",
-            "B": "https://www.bing.com/search?q=",
-            "D": "https://duckduckgo.com/?q="
+        // --- MODULE LOGIC ---
+        const addSection = (title) => {
+            const div = document.createElement('div');
+            div.className = 'module-title';
+            div.innerText = title;
+            output.appendChild(div);
         };
 
-        let engineLinks = '';
-        for(let [name, url] of Object.entries(engines)) {
-            engineLinks += `<a href="${url + encodeURIComponent(dork)}" target="_blank">${name}</a>`;
-        }
-
-        card.innerHTML = `
-            <span class="copy-tag" onclick="copyVal('${dork.replace(/'/g, "\\'")}')">COPY</span>
-            <h4>${title}</h4>
-            <code class="query-box">${dork}</code>
-            <div class="links-grid">${engineLinks}</div>
-        `;
-        return card;
-    }
-
-    function executeScan() {
-        const data = {
-            name: document.getElementById('name').value.trim(),
-            user: document.getElementById('user').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            loc: document.getElementById('loc').value.trim(),
-            nik: document.getElementById('nik').value.trim()
+        const addResult = (title, query) => {
+            const card = document.createElement('div');
+            card.className = 'result-item';
+            let links = '';
+            for(let [e, url] of Object.entries(engines)) {
+                links += `<a href="${url + encodeURIComponent(query)}" target="_blank">${e}</a>`;
+            }
+            card.innerHTML = `<h4>${title}</h4><span class="query-preview">${query}</span><div class="engine-bar">${links}</div>`;
+            output.appendChild(card);
         };
 
-        if(!data.name && !data.user && !data.phone && !data.email) {
-            alert("Insufficient data for reconnaissance.");
-            return;
+        // 1. DIGITAL FOOTPRINT (Paling Sering Dipakai)
+        addSection("Digital Footprint & Social");
+        if(name) addResult("Identity Search", `"${name}"`);
+        if(user) addResult("Global Username Search", `allintext:"${user}" -site:instagram.com -site:twitter.com`);
+        if(name && extra) addResult("Combined Pivot (Name + Email/NIK)", `"${name}" AND "${extra}"`);
+
+        // 2. LEAKS & SENSITIVE FILES (Pro Level)
+        addSection("Technical Leaks & Docs");
+        if(name) addResult("Sensitive Documents", `"${name}" filetype:pdf OR filetype:xlsx OR filetype:docx OR filetype:csv`);
+        if(user || name) addResult("Server Config/Logs", `intitle:"index of" "${user || name}" OR filetype:log OR filetype:env`);
+        if(extra) addResult("Database Leaks Match", `site:pastebin.com OR site:github.com OR site:ghostbin.com "${extra}"`);
+
+        // 3. INDONESIAN GOVERNMENT & PUBLIC DATA
+        addSection("ID Govt & Legal Search");
+        if(name) {
+            addResult("Govt Records (LPSE/KPU)", `site:go.id "${name}"`);
+            addResult("Court Records (Putusan MA)", `site:mahkamahagung.go.id "${name}"`);
+            addResult("Academic Check (Dikti)", `site:ac.id "${name}"`);
         }
 
-        const workspace = document.getElementById('workspace');
-        workspace.innerHTML = '';
-        log("Executing reconnaissance patterns...");
-
-        // --- MODULE 1: IDENTITY FOOTPRINTING ---
-        const modIdentity = createModule("MODULE 1: IDENTITY FOOTPRINTING");
-        if(data.name) {
-            modIdentity.appendChild(createCard("Exact Name Match", `"${data.name}"`));
-            modIdentity.appendChild(createCard("Public Documents (PDF/XLS)", `"${data.name}" (filetype:pdf OR filetype:xls OR filetype:doc)`));
+        // 4. FINANCIAL & COMMERCE
+        addSection("Financial & Commerce Trace");
+        if(phone) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            addResult("WhatsApp Pivot", `site:wa.me "${phone}" OR "${cleanPhone}"`);
+            addResult("E-Commerce Tracker", `site:tokopedia.com OR site:shopee.co.id OR site:olx.co.id "${phone}"`);
         }
-        if(data.user) {
-            modIdentity.appendChild(createCard("Alias Reconnaissance", `allintext:"${data.user}" -site:instagram.com -site:twitter.com`));
-        }
-        workspace.appendChild(modIdentity);
-
-        // --- MODULE 2: INDONESIAN PUBLIC SECTOR (OSINT.ID) ---
-        const modIndo = createModule("MODULE 2: INDO PUBLIC DATABASE");
-        if(data.name) {
-            modIndo.appendChild(createCard("Govt Services (LPSE/KPU)", `site:go.id "${data.name}"`));
-            modIndo.appendChild(createCard("Academic Records (PDDikti)", `site:ac.id "${data.name}"`));
-            modIndo.appendChild(createCard("Legal/Court (Putusan MA)", `site:mahkamahagung.go.id "${data.name}"`));
-        }
-        if(data.nik) {
-            modIndo.appendChild(createCard("NIK Leak Search", `"${data.nik}"`));
-        }
-        workspace.appendChild(modIndo);
-
-        // --- MODULE 3: FINANCIAL & E-COMMERCE ---
-        const modFinance = createModule("MODULE 3: COMMERCE & FINANCIAL");
-        if(data.phone || data.user) {
-            const pivot = data.phone || data.user;
-            modFinance.appendChild(createCard("E-Commerce Seller/Reviewer", `site:tokopedia.com OR site:shopee.co.id OR site:olx.co.id "${pivot}"`));
-            modFinance.appendChild(createCard("Forum Activities (Kaskus/Semprot)", `site:kaskus.co.id OR site:modifikasi.com "${pivot}"`));
-        }
-        workspace.appendChild(modFinance);
-
-        // --- MODULE 4: TECHNICAL DATA & LEAKS (PRO) ---
-        const modTechnical = createModule("MODULE 4: DEEP RECON & LEAKS");
-        if(data.email) {
-            modTechnical.appendChild(createCard("Email on Paste Sites", `site:pastebin.com OR site:ghostbin.com OR site:controlc.com "${data.email}"`));
-            modTechnical.appendChild(createCard("Trello/Github Leak", `site:trello.com OR site:github.com OR site:gitlab.com "${data.email}"`));
-        }
-        if(data.user || data.name) {
-            const target = data.user || data.name;
-            modTechnical.appendChild(createCard("Directory Listing (Index of)", `intitle:"index of" "${target}"`));
-            modTechnical.appendChild(createCard("Exposed Config Files", `filetype:env OR filetype:conf OR filetype:log "${target}"`));
-        }
-        workspace.appendChild(modTechnical);
-
-        // --- MODULE 5: SOCIAL PIVOTING ---
-        const modSocial = createModule("MODULE 5: SOCIAL GRAPH PIVOT");
-        if(data.user) {
-            const socCard = document.createElement('div');
-            socCard.className = 'card';
-            socCard.innerHTML = `<h4>Direct Link Pivoting</h4><div class="links-grid">
-                <a href="https://www.facebook.com/search/top/?q=${encodeURIComponent(data.name || data.user)}" target="_blank">FB Search</a>
-                <a href="https://www.instagram.com/${data.user}" target="_blank">IG Profile</a>
-                <a href="https://twitter.com/${data.user}" target="_blank">X Profile</a>
-                <a href="https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(data.name)}" target="_blank">LinkedIn</a>
-            </div>`;
-            modSocial.appendChild(socCard);
-        }
-        workspace.appendChild(modSocial);
-
-        log("Scan Complete. Analyzing connections...");
+        
+        window.scrollTo({ top: 500, behavior: 'smooth' });
     }
 </script>
 
